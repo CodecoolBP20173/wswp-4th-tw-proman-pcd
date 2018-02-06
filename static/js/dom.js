@@ -5,6 +5,17 @@ dom = {
         // retrieves boards and makes showBoards called
         dataHandler.init();
         dataHandler.getBoards(this.showBoards);
+
+        //TODO: onload?
+        var addNewCard = document.getElementById("addNewCard");
+
+        addNewCard.addEventListener('click', function () {
+            var cardTitle = prompt("Card title: ");
+
+            if ( cardTitle != null ) {
+                dataHandler.createNewCard(cardTitle, 2, 1, dom.showCards);
+            }
+        });
     },
     showBoards: function(boards) {
         // shows boards appending them to #accordion div

@@ -33,7 +33,7 @@ function getNewId(data, table) {
     var maximumID = Math.max(...card_ids);
     maximumID += 1;
     return maximumID;
-
+}
 
 /**
  * Returns the index in the array of objects that has the condition value at the key.

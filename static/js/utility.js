@@ -16,6 +16,7 @@ function getObjectListByKeyValue(data, table, key, value) {
     }
     return resultArray;
 }
+
 /**
  * Generates a new ID for the new item in the given table
  * @param data: database
@@ -33,7 +34,7 @@ function getNewId(data, table) {
     var maximumID = Math.max(...card_ids);
     maximumID += 1;
     return maximumID;
-
+}
 
 /**
  * Returns the index in the array of objects that has the condition value at the key.

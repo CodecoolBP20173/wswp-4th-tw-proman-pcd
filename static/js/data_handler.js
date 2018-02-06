@@ -9,10 +9,15 @@ dataHandler = {
     _loadData: function() {
         // it is not called from outside
         // loads data from local storage, parses it and put into this._data property
+        var dataString = localStorage.getItem("proman-data");
+        this._data = JSON.parse(dataString);
     },
     _saveData: function() {
         // it is not called from outside
         // saves the data from this._data to local storage
+        var dataString = JSON.stringify(this._data);
+        localStorage.setItem("proman-data", dataString);
+
     },
     init: function() {
         this._loadData();
@@ -22,6 +27,7 @@ dataHandler = {
     },
     getBoard: function(boardId, callback) {
         // the board is retrieved and then the callback function is called with the board
+        //NO NEED FOR THIS (YET)
     },
     getStatuses: function(callback) {
         // the statuses are retrieved and then the callback function is called with the statuses
@@ -31,9 +37,12 @@ dataHandler = {
     },
     getCardsByBoardId: function(boardId, callback) {
         // the cards are retrieved and then the callback function is called with the cards
+        var cards = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
+        callback(cards);
     },
     getCard: function(cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
+        //NO NEED FOR THIS (YET)
     },
     createNewBoard: function(boardTitle, callback) {
         // creates new board, saves it and calls the callback function with its data

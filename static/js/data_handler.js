@@ -62,6 +62,16 @@ dataHandler = {
         };
         this._data["cards"].push(newCard);
         callback();
-    }
+    },
     // here comes more features
+    editCard: function (cardId, cardTitle, callback) {
+        let cards = this._data.cards;
+        for (let i = 0; i < cards.length; i++){
+            if (cards[i].id === cardId) {
+                cards[i].title = cardTitle;
+                break;
+            }
+        }
+        callback();
+    }
 };

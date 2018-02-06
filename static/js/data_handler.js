@@ -30,6 +30,7 @@ dataHandler = {
     },
     getBoard: function(boardId, callback) {
         // the board is retrieved and then the callback function is called with the board
+        //NO NEED FOR THIS (YET)
     },
     getStatuses: function(callback) {
         // the statuses are retrieved and then the callback function is called with the statuses
@@ -39,9 +40,12 @@ dataHandler = {
     },
     getCardsByBoardId: function(boardId, callback) {
         // the cards are retrieved and then the callback function is called with the cards
+        var cards = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
+        callback(cards);
     },
     getCard: function(cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
+        //NO NEED FOR THIS (YET)
     },
     createNewBoard: function(boardTitle, callback) {
         // creates new board, saves it and calls the callback function with its data

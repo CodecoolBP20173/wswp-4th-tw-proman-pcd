@@ -1,12 +1,40 @@
 // It uses data_handler.js to visualize elements
+
 dom = {
     loadBoards: function() {
-        dataHandler.init();
         // retrieves boards and makes showBoards called
+        dataHandler.init();
+        dataHandler.getBoards(this.showBoards);
     },
     showBoards: function(boards) {
-        // shows boards appending them to #boards div
+        // shows boards appending them to #accordion div
         // it adds necessary event listeners also
+        var accordion = document.getElementById("accordion");
+
+        // create a div for each board. To populate them with cards, divs can be referred to via board.id
+        for (let board of boards) {
+            var div = document.createElement('div');
+            div.classList.add("card");
+            div.setAttribute("id", "board_"+board.id);
+            div.innerHTML = `
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
+                                    aria-controls="collapseOne">
+                                ${board.title}
+                            </button>
+                        </h5>
+                    </div>
+    
+                    <div id="board_id${board.id}" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            Board: cards come here
+                        </div>
+                    </div>
+            `;
+            accordion.appendChild(div);
+        }
+
     },
     loadCards: function(boardId) {
         // retrieves cards and makes showCards called

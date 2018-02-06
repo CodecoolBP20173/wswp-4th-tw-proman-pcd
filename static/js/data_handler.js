@@ -52,6 +52,16 @@ dataHandler = {
     },
     createNewCard: function(cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
+        let newCardID = getNewId(this._data, "cards");
+        let newCard = {
+            id: newCardID,
+            title: cardTitle,
+            board_id: boardId,
+            status_id: statusId,
+            order: 1
+        };
+        this._data["cards"].push(newCard);
+        callback();
     }
     // here comes more features
 };

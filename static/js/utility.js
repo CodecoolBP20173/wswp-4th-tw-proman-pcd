@@ -16,6 +16,23 @@ function getObjectListByKeyValue(data, table, key, value) {
     }
     return resultArray;
 }
+/**
+ * Generates a new ID for the new item in the given table
+ * @param data: database
+ * @param table: tablename
+ * @returns {number}
+ */
+function getNewId(data, table) {
+    var cards = data[table];
+    var card_ids = new Array();
+
+    for (let card of cards) {
+        card_ids.push(card.id);
+    }
+
+    var maximumID = Math.max(...card_ids);
+    maximumID += 1;
+    return maximumID;
 
 
 /**
@@ -34,4 +51,5 @@ function getIndexByKeyValue(data, table, primaryKey, value) {
         }
     }
     throw "Index by value not found. No match.";
+
 }

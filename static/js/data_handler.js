@@ -9,10 +9,15 @@ dataHandler = {
     _loadData: function() {
         // it is not called from outside
         // loads data from local storage, parses it and put into this._data property
+        var dataString = localStorage.getItem("proman-data");
+        this._data = JSON.parse(dataString);
     },
     _saveData: function() {
         // it is not called from outside
         // saves the data from this._data to local storage
+        var dataString = JSON.stringify(this._data);
+        localStorage.setItem("proman-data", dataString);
+
     },
     init: function() {
         this._loadData();

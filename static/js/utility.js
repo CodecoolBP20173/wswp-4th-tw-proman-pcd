@@ -1,5 +1,5 @@
 /**
- * Get's an array of objects that has the conditon value at the key.
+ * Returns an array of objects that has the condition value at the key.
  * @param data (object): full database, containing objects with arrays of objects
  * @param table (string): name of the object within the database, you wish to search in
  * @param key (string): key within the an element of a table
@@ -15,4 +15,23 @@ function getObjectListByKeyValue(data, table, key, value) {
         }
     }
     return resultArray;
+}
+
+
+/**
+ * Returns the index in the array of objects that has the condition value at the key.
+ * @param data (object): full database, containing objects with arrays of objects
+ * @param table (string): name of the object within the database, you wish to search in
+ * @param primaryKey (string): key which's value is unique
+ * @param value (primitive type): condition value of the key
+ * @return integer
+ */
+function getIndexByKeyValue(data, table, primaryKey, value) {
+    var tableArray = data[table];
+    for (let i=0; i < tableArray.length; i++){
+        if (tableArray[i][primaryKey] === value) {
+            return i;
+        }
+    }
+    throw "Index by value not found. No match.";
 }

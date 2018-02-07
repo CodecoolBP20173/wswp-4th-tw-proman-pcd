@@ -159,8 +159,9 @@ dom = {
             callback();
             var newCardTitle = domObject.value;
             dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
+            dom.addNewCardButtons();
+            //domObject.parentNode.innerHTML = oldHTMLContent;
 
-            domObject.parentNode.innerHTML = oldHTMLContent;
         }
     }
 }

@@ -97,6 +97,7 @@ dataHandler = {
         this._saveData();
     },
     editCard: function (cardId, cardTitle, callback) {
+        //TODO: bekötni a card namehez
         let cards = this._data.cards;
         for (let i = 0; i < cards.length; i++){
             if (cards[i].id === cardId) {

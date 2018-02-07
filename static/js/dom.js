@@ -63,6 +63,14 @@ dom = {
             dataHandler.saveOrder(idArray);
         });
 
+        var buttonNewBoard = document.getElementById('addNewCard');
+        buttonNewBoard.addEventListener('click', function () {
+            var boardTitle = prompt("Board title: ");
+
+            if ( boardTitle != null ) {
+                dataHandler.createNewBoard(boardTitle, dom.showBoards);
+            }
+        });
 
     },
     loadCards: function(boardId) {
@@ -72,19 +80,22 @@ dom = {
     showCards: function(cards) {
         // add cards to the board
         // it adds necessary event listeners also
-        var grandParentObj = document.getElementById("board_" + cards[0].board_id);
-        var cardBlocksArray = grandParentObj.getElementsByClassName("card-block");
+        if (cards.length !== 0) {
+            //TODO: if the card list is empty, all die
+            var grandParentObj = document.getElementById("board_" + cards[0].board_id);
+            var cardBlocksArray = grandParentObj.getElementsByClassName("card-block");
 
-        for (let block of cardBlocksArray) {
-            block.innerHTML = "";
-        }
+            for (let block of cardBlocksArray) {
+                block.innerHTML = "";
+            }
 
 
-        for (let card of cards) {
-            var parentObject= grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
-            var cardNode = dom.generateCardNode(card);
-            var targetObjectArray = parentObject.getElementsByClassName("card-block");
-            targetObjectArray[0].appendChild(cardNode);
+            for (let card of cards) {
+                var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
+                var cardNode = dom.generateCardNode(card);
+                var targetObjectArray = parentObject.getElementsByClassName("card-block");
+                targetObjectArray[0].appendChild(cardNode);
+            }
         }
     },
     // here comes more features

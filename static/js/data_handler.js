@@ -60,11 +60,11 @@ dataHandler = {
             id: newCardID,
             title: cardTitle,
             board_id: boardId,
-            status_id: statusId,
+            status_id: 1,
             order: 1
         };
         this._data["cards"].push(newCard);
-        callback();
+        callback(this._data);
     },
     // here comes more features
     editCard: function (cardId, cardTitle, callback) {
@@ -75,6 +75,6 @@ dataHandler = {
                 break;
             }
         }
-        callback();
+        callback(dom._data);
     }
 };

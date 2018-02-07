@@ -7,7 +7,7 @@ dom = {
         dataHandler.getBoards(this.showBoards);
 
         //TODO: onload?
-        var addNewCard = document.getElementById("addNewCard");
+        /*var addNewCard = document.getElementById("addNewCard");
 
         addNewCard.addEventListener('click', function () {
             var cardTitle = prompt("Card title: ");
@@ -15,7 +15,12 @@ dom = {
             if ( cardTitle != null ) {
                 dataHandler.createNewCard(cardTitle, 2, 1, dom.showCards);
             }
-        });
+        });*/
+
+        //TODO: put when the user clicked the card
+        //var newCardTitle = prompt("Edit Card title: ", dataHandler._data.cards[0].title);
+        //dataHandler.editCard(1, newCardTitle, this.showCards)
+
     },
     showBoards: function(boards) {
         // shows boards appending them to #accordion div

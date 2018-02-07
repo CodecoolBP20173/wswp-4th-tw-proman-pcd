@@ -32,7 +32,7 @@ sampleData = {
             "id": 2,
             "title": "Test Board 2",
             "is_active": true
-        }
+        },
     ],
     "cards": [
         {
@@ -67,7 +67,7 @@ sampleData = {
             "id": 5,
             "title": "task5",
             "board_id": 2,
-            "status_id": 2,
+            "status_id": 1,
             "order": 2
         },
         {

@@ -76,7 +76,26 @@ dataHandler = {
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
         callback(cardsOfBoard);
     },
-    // here comes more features
+    saveStatus: function (cardId, status) {
+        for (let x of this._data.cards) {
+            if (x.id == cardId) {
+                x.status_id = status;
+                this._saveData();
+            }
+        }
+    },
+    saveOrder: function (orderArray) {
+        for (var x of this._data.cards) {
+            for (var id of orderArray) {
+                if (x.id == id) {
+                    x.order = orderArray.indexOf(id) + 1;
+                }
+            }
+        }
+
+        sortObj(this._data.cards, "order");
+        this._saveData();
+    },
     editCard: function (cardId, cardTitle, callback) {
         let cards = this._data.cards;
         for (let i = 0; i < cards.length; i++){

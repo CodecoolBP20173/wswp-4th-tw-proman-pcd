@@ -32,11 +32,14 @@ dataHandler = {
         // the board is retrieved and then the callback function is called with the board
         //NO NEED FOR THIS (YET)
     },
-    getStatuses: function(callback) {
+    getStatuses: function(callback, targetDomObj, board_id) {
         // the statuses are retrieved and then the callback function is called with the statuses
+        var statusesArray = this._data.statuses;
+        callback(statusesArray, targetDomObj, board_id);
     },
     getStatus: function(statusId, callback) {
         // the status is retrieved and then the callback function is called with the status
+        //NO NEED FOR THIS (YET)
     },
     getCardsByBoardId: function(boardId, callback) {
         // the cards are retrieved and then the callback function is called with the cards

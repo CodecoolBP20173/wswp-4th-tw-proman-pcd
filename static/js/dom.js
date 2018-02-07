@@ -38,13 +38,16 @@ dom = {
                     </div>
     
                     <div id="board_id${board.id}" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
-                        <div class="card-body">
-                            Board: cards come here
+                        <div class="_board_body card-body row">
+                            Status panels come here
                         </div>
                     </div>
             `;
             accordion.appendChild(div);
+            var statusParentObject = document.getElementById(`board_id${board.id}`).firstElementChild;
+            dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
         }
+
 
     },
     loadCards: function(boardId) {
@@ -52,21 +55,39 @@ dom = {
         dataHandler.getCardsByBoardId(boardId, this.showCards);
     },
     showCards: function(cards) {
-        // shows the cards of a board
+        // add cards to the board
         // it adds necessary event listeners also
+        var grandParentObj = document.getElementById("board_" + cards[0].board_id);
         for (let card of cards) {
-            var cardParent = document.getElementById("board_" + card.board_id);
+            var parentObject= grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
             var cardNode = dom.generateCardNode(card);
-            cardParent.appendChild(cardNode);
+            parentObject.appendChild(cardNode);
         }
     },
     // here comes more features
-    generateCardNode: function (card) {
+    generateCardNode: function(card) {
         var cardNode = document.createElement("div");
         cardNode.id = "card_" + card.id;
         cardNode.classList.add("_card");
         var cardTextNode = document.createTextNode(card.title);
         cardNode.appendChild(cardTextNode);
         return cardNode;
+    },
+    showStatuses: function(statusesArray, parentDomObj, board_id) {
+        // add status panels to the boards
+        var htmlContentString = "";
+        for (let status of statusesArray) {
+            htmlContentString += `
+                    <div class="card col _statuspanel" data-status="${status.id}">
+                        <div class="card-header">
+                            ${status.name}
+                        </div>
+                        <div class="card-block">
+                        </div>
+                    </div>
+            `;
+        }
+        parentDomObj.innerHTML = htmlContentString;
+        dataHandler.getCardsByBoardId(board_id, dom.showCards);
     }
 }

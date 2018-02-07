@@ -16,6 +16,7 @@ function getObjectListByKeyValue(data, table, key, value) {
     }
     return resultArray;
 }
+
 /**
  * Generates a new ID for the new item in the given table
  * @param data: database

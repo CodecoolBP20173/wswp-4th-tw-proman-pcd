@@ -50,8 +50,16 @@ dataHandler = {
         // the card is retrieved and then the callback function is called with the card
         //NO NEED FOR THIS (YET)
     },
-    createNewBoard: function(boardTitle, callback) {
-        // creates new board, saves it and calls the callback function with its data
+    createNewBoard: function (boardTitle, callBack) {
+        let newBoardId = getNewId(this._data, "boards");
+        let newBoard = {
+            id: newBoardId,
+            title: boardTitle,
+            is_active: true
+        };
+        this._data["boards"].push(newBoard);
+        this._saveData();
+        callBack(this._data.boards);
     },
     createNewCard: function(cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
@@ -60,11 +68,22 @@ dataHandler = {
             id: newCardID,
             title: cardTitle,
             board_id: boardId,
-            status_id: statusId,
+            status_id: 1,
             order: 1
         };
         this._data["cards"].push(newCard);
-        callback();
-    }
+        callback(this._data);
+    },
     // here comes more features
+    editCard: function (cardId, cardTitle, callback) {
+        let cards = this._data.cards;
+        for (let i = 0; i < cards.length; i++){
+            if (cards[i].id === cardId) {
+                cards[i].title = cardTitle;
+                break;
+            }
+        }
+        this._saveData();
+        callback(this._data.cards);
+    }
 };

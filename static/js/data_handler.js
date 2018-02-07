@@ -15,7 +15,6 @@ dataHandler = {
     _saveData: function() {
         // it is not called from outside
         // saves the data from this._data to local storage
-        debugger;
         var dataString = JSON.stringify(this._data);
         localStorage.setItem("proman-data", dataString);
 
@@ -83,7 +82,9 @@ dataHandler = {
                 }
             }
         }
-        console.log(this._data.cards);
+
+        sortObj(this._data.cards, "order");
+        this._saveData();
     }
     // here comes more features
 };

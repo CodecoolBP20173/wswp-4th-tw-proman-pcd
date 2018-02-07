@@ -77,7 +77,6 @@ dom = {
             var targetObjectArray = parentObject.getElementsByClassName("card-block");
             targetObjectArray[0].appendChild(cardNode);
         }
-        // dragula([document.ge])
     },
     // here comes more features
 

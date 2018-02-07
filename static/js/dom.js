@@ -41,7 +41,14 @@ dom = {
         for (let i = 0; i < boards.length*4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
-        dragula(dragulaContainers);
+        dragula(dragulaContainers).on('drop', function(el) {
+            let parent = el.parentElement;
+            let grandparent = parent.parentElement;
+            let status = grandparent.dataset.status;
+            let id = el.dataset.id;
+            dataHandler.saveStatus(id, status);
+
+        });
 
 
     },
@@ -69,6 +76,7 @@ dom = {
         cardNode.id = "card_" + card.id;
         cardNode.classList.add("_card");
         cardNode.classList.add("card");
+        cardNode.dataset.id = card.id;
         var cardTextNode = document.createTextNode(card.title);
         cardNode.appendChild(cardTextNode);
         return cardNode;

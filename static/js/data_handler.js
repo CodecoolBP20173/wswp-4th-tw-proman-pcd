@@ -65,6 +65,17 @@ dataHandler = {
         };
         this._data["cards"].push(newCard);
         callback();
+    },
+    saveStatus: function (cardId, status) {
+        debugger;
+        for (let x of this._data.cards) {
+            if (x.id == cardId) {
+                debugger;
+                x.status_id = status;
+                debugger;
+                this._saveData();
+            }
+        }
     }
     // here comes more features
 };

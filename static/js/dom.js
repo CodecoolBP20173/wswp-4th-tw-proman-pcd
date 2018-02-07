@@ -111,6 +111,7 @@ dom = {
             if (key == 13 && !event.shiftKey) {
                 event.preventDefault();
                 callback();
+                this.parentNode.innerHTML = currentHTMLContent;
             }
         })
     }

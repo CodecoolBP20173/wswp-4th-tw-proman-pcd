@@ -5,16 +5,6 @@ dom = {
         // retrieves boards and makes showBoards called
         dataHandler.init();
         dataHandler.getBoards(this.showBoards);
-
-        var addNewCard = document.getElementById("newBoard");
-
-        addNewCard.addEventListener('click', function () {
-            var boardTitle = prompt("Board title: ");
-
-            if ( boardTitle != null ) {
-                dataHandler.createNewBoard(boardTitle, dom.showBoards);
-            }
-        });
     },
     showBoards: function(boards) {
         // shows boards appending them to #accordion div
@@ -58,6 +48,13 @@ dom = {
         // add cards to the board
         // it adds necessary event listeners also
         var grandParentObj = document.getElementById("board_" + cards[0].board_id);
+        var cardBlocksArray = grandParentObj.getElementsByClassName("card-block");
+
+        for (let block of cardBlocksArray) {
+            block.innerHTML = "";
+        }
+
+
         for (let card of cards) {
             var parentObject= grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
             var cardNode = dom.generateCardNode(card);
@@ -95,7 +92,7 @@ dom = {
 
     addNewCardButtons: function() {
         var newPanelDomObjArray = document.querySelectorAll("[data-status='1']");
-        for (newPanel of newPanelDomObjArray) {
+        for (let newPanel of newPanelDomObjArray) {
             var parentDomObjArray = newPanel.getElementsByClassName("new_card_wrapper");
             var board_id = getFirstAncestorByClass(parentDomObjArray[0], "_boardhead").dataset.board_id;
             parentDomObjArray[0].innerHTML = `
@@ -117,18 +114,22 @@ dom = {
         `;
         var textAreaObj = document.getElementById("edit_field");
         textAreaObj.focus();
+        var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
             dom.saveCardEventListener(function() {
                console.log("Creating card");
-            }, currentHTMLContent, textAreaObj);
+            }, currentHTMLContent, textAreaObj, board_id);
         });
     },
 
-    saveCardEventListener: function(callback, oldHTMLContent, domObject) {
+    saveCardEventListener: function(callback, oldHTMLContent, domObject, board_id) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
             callback();
+            var newCardTitle = domObject.value;
+            dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
+
             domObject.parentNode.innerHTML = oldHTMLContent;
         }
     }

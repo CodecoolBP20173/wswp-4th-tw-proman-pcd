@@ -67,12 +67,14 @@ dataHandler = {
         let newCard = {
             id: newCardID,
             title: cardTitle,
-            board_id: boardId,
+            board_id: parseInt(boardId),
             status_id: 1,
             order: 1
         };
+        dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
-        callback(this._data);
+        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
+        callback(cardsOfBoard);
     },
     // here comes more features
     editCard: function (cardId, cardTitle, callback) {
@@ -83,7 +85,15 @@ dataHandler = {
                 break;
             }
         }
-        this._saveData();
+        //this._saveData();
         callback(this._data.cards);
+    },
+    increaseOrderNumber: function () {
+        for (let i=0; i < dataHandler._data.cards.length; i++) {
+            if (dataHandler._data.cards[i].status_id === 1){
+                dataHandler._data.cards[i].order += 1;
+            }
+
+        }
     }
 };

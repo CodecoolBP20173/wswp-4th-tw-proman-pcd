@@ -36,6 +36,12 @@ dom = {
             var statusParentObject = document.getElementById(`board_id${board.id}`).firstElementChild;
             dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
         }
+        // dragula
+        var dragulaContainers = [];
+        for (let i = 0; i < boards.length*4; i++) {
+            dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
+        }
+        dragula(dragulaContainers);
 
 
     },
@@ -50,14 +56,19 @@ dom = {
         for (let card of cards) {
             var parentObject= grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
             var cardNode = dom.generateCardNode(card);
-            parentObject.appendChild(cardNode);
+            var targetObjectArray = parentObject.getElementsByClassName("card-block");
+            targetObjectArray[0].appendChild(cardNode);
         }
+        // dragula([document.ge])
     },
     // here comes more features
+
+
     generateCardNode: function(card) {
         var cardNode = document.createElement("div");
         cardNode.id = "card_" + card.id;
         cardNode.classList.add("_card");
+        cardNode.classList.add("card");
         var cardTextNode = document.createTextNode(card.title);
         cardNode.appendChild(cardTextNode);
         return cardNode;
@@ -79,4 +90,4 @@ dom = {
         parentDomObj.innerHTML = htmlContentString;
         dataHandler.getCardsByBoardId(board_id, dom.showCards);
     }
-}
+};

@@ -6,26 +6,21 @@ dom = {
         dataHandler.init();
         dataHandler.getBoards(this.showBoards);
 
-        //TODO: onload?
-        /*var addNewCard = document.getElementById("addNewCard");
+        var addNewCard = document.getElementById("newBoard");
 
         addNewCard.addEventListener('click', function () {
-            var cardTitle = prompt("Card title: ");
+            var boardTitle = prompt("Board title: ");
 
-            if ( cardTitle != null ) {
-                dataHandler.createNewCard(cardTitle, 2, 1, dom.showCards);
+            if ( boardTitle != null ) {
+                dataHandler.createNewBoard(boardTitle, dom.showBoards);
             }
-        });*/
-
-        //TODO: put when the user clicked the card
-        //var newCardTitle = prompt("Edit Card title: ", dataHandler._data.cards[0].title);
-        //dataHandler.editCard(1, newCardTitle, this.showCards)
-
+        });
     },
     showBoards: function(boards) {
         // shows boards appending them to #accordion div
         // it adds necessary event listeners also
         var accordion = document.getElementById("accordion");
+
 
         // create a div for each board. To populate them with cards, divs can be referred to via board.id
         for (let board of boards) {

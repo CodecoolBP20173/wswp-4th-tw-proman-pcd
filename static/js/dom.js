@@ -20,7 +20,7 @@ dom = {
         // shows boards appending them to #accordion div
         // it adds necessary event listeners also
         var accordion = document.getElementById("accordion");
-
+        accordion.innerHTML = "";
 
         // create a div for each board. To populate them with cards, divs can be referred to via board.id
         for (let board of boards) {

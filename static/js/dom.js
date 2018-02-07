@@ -99,7 +99,7 @@ dom = {
         }
     },
 
-    turnContentIntoInput (callback, domObj) {
+    turnContentIntoInput: function(callback, domObj) {
         var currentHTMLContent = domObj.parentNode.innerHTML;
         domObj.parentNode.innerHTML = `
                 <textarea id="edit_field" class="card" placeholder="New task ..."></textarea>
@@ -107,13 +107,19 @@ dom = {
         var textAreaObj = document.getElementById("edit_field");
         textAreaObj.focus();
         textAreaObj.addEventListener("keydown", function () {
-            var key = event.which || event.keyCode;
-            if (key == 13 && !event.shiftKey) {
-                event.preventDefault();
-                callback();
-                this.parentNode.innerHTML = currentHTMLContent;
-            }
-        })
+            dom.saveCardEventListener(function() {
+               console.log("Creating card");
+            }, currentHTMLContent, textAreaObj);
+        });
+    },
+
+    saveCardEventListener: function(callback, oldHTMLContent, domObject) {
+        var key = event.which || event.keyCode;
+        if (key == 13 && !event.shiftKey) {
+            event.preventDefault();
+            callback();
+            domObject.parentNode.innerHTML = oldHTMLContent;
+        }
     }
 
 }

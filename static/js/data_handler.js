@@ -65,6 +65,26 @@ dataHandler = {
         };
         this._data["cards"].push(newCard);
         callback();
+    },
+    saveStatus: function (cardId, status) {
+        for (let x of this._data.cards) {
+            if (x.id == cardId) {
+                x.status_id = status;
+                this._saveData();
+            }
+        }
+    },
+    saveOrder: function (orderArray) {
+        for (var x of this._data.cards) {
+            for (var id of orderArray) {
+                if (x.id == id) {
+                    x.order = orderArray.indexOf(id)+1;
+                }
+            }
+        }
+
+        sortObj(this._data.cards, "order");
+        this._saveData();
     }
     // here comes more features
 };

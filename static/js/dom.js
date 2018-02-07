@@ -37,6 +37,31 @@ dom = {
             dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
         }
         dom.addNewCardButtons();
+        // dragula
+        var dragulaContainers = [];
+        for (let i = 0; i < boards.length*4; i++) {
+            dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
+        }
+        dragula(dragulaContainers).on('drop', function(el) {
+            let parent = el.parentElement;
+            let grandparent = parent.parentElement;
+            let status = grandparent.dataset.status;
+            let id = el.dataset.id;
+
+            dataHandler.saveStatus(id, status);
+        }).on('drop', function (el) {
+            let parent = el.parentElement;
+            let cardArray = parent.getElementsByClassName("_card");
+
+            let idArray = [];
+            for (let x = 0; x < cardArray.length; x++) {
+                let idToPush = cardArray[x].dataset.id;
+                idArray.push(idToPush);
+            }
+
+            dataHandler.saveOrder(idArray);
+        });
+
 
     },
     loadCards: function(boardId) {
@@ -50,14 +75,19 @@ dom = {
         for (let card of cards) {
             var parentObject= grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
             var cardNode = dom.generateCardNode(card);
-            parentObject.appendChild(cardNode);
+            var targetObjectArray = parentObject.getElementsByClassName("card-block");
+            targetObjectArray[0].appendChild(cardNode);
         }
     },
     // here comes more features
+
+
     generateCardNode: function(card) {
         var cardNode = document.createElement("div");
         cardNode.id = "card_" + card.id;
         cardNode.classList.add("_card");
+        cardNode.classList.add("card");
+        cardNode.dataset.id = card.id;
         var cardTextNode = document.createTextNode(card.title);
         cardNode.appendChild(cardTextNode);
         return cardNode;
@@ -121,5 +151,4 @@ dom = {
             domObject.parentNode.innerHTML = oldHTMLContent;
         }
     }
-
 }

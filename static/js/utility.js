@@ -55,6 +55,22 @@ function getIndexByKeyValue(data, table, primaryKey, value) {
 
 }
 
+/**
+ *
+ * @param elem
+ * @param classToFind
+ * @returns {*}
+ */
+function getFirstAncestorByClass(elem, classToFind) {
+    for ( ; elem && elem !== document; elem = elem.parentNode ) {
+        var matchDomObjArray = elem.querySelectorAll("[data-board_id]");
+		if (matchDomObjArray.length > 0) {
+		    return matchDomObjArray[0];
+        }
+	}
+	return null;
+}
+
 
 function sortObj(list, key) {
     function compare(a, b) {

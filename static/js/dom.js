@@ -46,8 +46,19 @@ dom = {
             let grandparent = parent.parentElement;
             let status = grandparent.dataset.status;
             let id = el.dataset.id;
-            dataHandler.saveStatus(id, status);
 
+            dataHandler.saveStatus(id, status);
+        }).on('drop', function (el) {
+            let parent = el.parentElement;
+            let cardArray = parent.getElementsByClassName("_card");
+
+            let idArray = [];
+            for (let x = 0; x < cardArray.length; x++) {
+                let idToPush = cardArray[x].dataset.id;
+                idArray.push(idToPush);
+            }
+
+            dataHandler.saveOrder(idArray);
         });
 
 

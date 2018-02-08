@@ -38,30 +38,48 @@ dom = {
             dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
         }
         dom.addNewCardButtons();
-        // dragula
+
+        // Drag & Drop functionality via DRAGULA
         var dragulaContainers = [];
         for (let i = 0; i < boards.length*4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
-        dragula(dragulaContainers).on('drop', function(el) {
-            let parent = el.parentElement;
-            let grandparent = parent.parentElement;
-            let status = grandparent.dataset.status;
-            let id = el.dataset.id;
+        dragula(dragulaContainers, {
+                // remove item when dropped outside of containers option set
+                removeOnSpill: true
 
-            dataHandler.saveStatus(id, status);
-        }).on('drop', function (el) {
-            let parent = el.parentElement;
-            let cardArray = parent.getElementsByClassName("_card");
+            // save status when card is dropped
+            }).on('drop', function(el) {
+                let parent = el.parentElement;
+                let grandparent = parent.parentElement;
+                let status = grandparent.dataset.status;
+                let id = el.dataset.id;
+                dataHandler.saveStatus(id, status);
 
-            let idArray = [];
-            for (let x = 0; x < cardArray.length; x++) {
-                let idToPush = cardArray[x].dataset.id;
-                idArray.push(idToPush);
-            }
+            // save new order when card is dropped
+            }).on('drop', function (el) {
 
-            dataHandler.saveOrder(idArray);
-        });
+                let parent = el.parentElement;
+                let cardArray = parent.getElementsByClassName("_card");
+                let idArray = [];
+                for (let x = 0; x < cardArray.length; x++) {
+                    let idToPush = cardArray[x].dataset.id;
+                    idArray.push(idToPush);
+            };
+                dataHandler.saveOrder(idArray);
+
+            // remove card when dropped outside of containers
+            }).on('remove', function (el) {
+
+                let cardId = el.dataset.id;
+                console.log(cardId);
+                let confirmed = confirm("Are you sure you want to delete this card?");
+                if (confirmed) {
+                    dataHandler.deleteCard(cardId);
+                    } else {
+                    this.loadBoards();
+                };
+              });
 
         /*var buttonNewBoard = document.getElementById('addNewCard');
         buttonNewBoard.addEventListener('click', function () {
@@ -112,6 +130,7 @@ dom = {
         cardNode.appendChild(cardTextNode);
         return cardNode;
     },
+
     showStatuses: function(statusesArray, parentDomObj, board_id) {
         // add status panels to the boards
         var htmlContentString = "";
@@ -158,20 +177,17 @@ dom = {
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
-            dom.saveCardEventListener(function() {
-               console.log("Creating card");
-            }, textAreaObj, board_id);
+            dom.saveCardEventListener(gittextAreaObj, board_id);
         });
         textAreaObj.addEventListener("focusout", function () {
             dom.cancelChangeEventListener(currentText, textAreaObj);
         });
     },
 
-    saveCardEventListener: function(callback, domObject, board_id) {
+    saveCardEventListener: function(domObject, board_id) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
-            callback();
             var newCardTitle = domObject.value;
             dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
             dom.addNewCardButtons();

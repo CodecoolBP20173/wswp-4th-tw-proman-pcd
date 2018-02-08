@@ -1,14 +1,14 @@
 // It uses data_handler.js to visualize elements
 
 dom = {
-    loadBoards: function() {
+    loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.init();
         dataHandler.getBoards(this.showBoards);
     },
-    showBoards: function(boards) {
+    showBoards: function (boards) {
         // shows boards appending them to #accordion div
-        // it adds necessary event listeners also
+        // it adds drag and drop functionality
         var accordion = document.getElementById("accordion");
         accordion.innerHTML = "";
 
@@ -16,7 +16,7 @@ dom = {
         for (let board of boards) {
             var div = document.createElement('div');
             div.classList.add("card");
-            div.setAttribute("id", "board_"+board.id);
+            div.setAttribute("id", "board_" + board.id);
             div.innerHTML = `
                     <div class="card-header _boardhead" id="heading_${board.id}" data-board_id="${board.id}">
                         <h5 class="mb-0">
@@ -41,61 +41,63 @@ dom = {
 
         // Drag & Drop functionality via DRAGULA
         var dragulaContainers = [];
-        for (let i = 0; i < boards.length*4; i++) {
+        for (let i = 0; i < boards.length * 4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
         dragula(dragulaContainers, {
-                // remove item when dropped outside of containers option set
-                removeOnSpill: true
+            // remove item when dropped outside of containers option set
+            removeOnSpill: true
 
             // save status when card is dropped
-            }).on('drop', function(el) {
-                let parent = el.parentElement;
-                let grandparent = parent.parentElement;
-                let status = grandparent.dataset.status;
-                let id = el.dataset.id;
-                dataHandler.saveStatus(id, status);
+        }).on('drop', function (el) {
+            let parent = el.parentElement;
+            let grandparent = parent.parentElement;
+            let status = grandparent.dataset.status;
+            let id = el.dataset.id;
+            dataHandler.saveStatus(id, status);
 
             // save new order when card is dropped
-            }).on('drop', function (el) {
+        }).on('drop', function (el) {
 
-                let parent = el.parentElement;
-                let cardArray = parent.getElementsByClassName("_card");
-                let idArray = [];
-                for (let x = 0; x < cardArray.length; x++) {
-                    let idToPush = cardArray[x].dataset.id;
-                    idArray.push(idToPush);
-            };
-                dataHandler.saveOrder(idArray);
+            let parent = el.parentElement;
+            let cardArray = parent.getElementsByClassName("_card");
+            let idArray = [];
+            for (let x = 0; x < cardArray.length; x++) {
+                let idToPush = cardArray[x].dataset.id;
+                idArray.push(idToPush);
+            }
+            ;
+            dataHandler.saveOrder(idArray);
 
             // remove card when dropped outside of containers
-            }).on('remove', function (el) {
+        }).on('remove', function (el) {
 
-                let cardId = el.dataset.id;
-                console.log(cardId);
-                let confirmed = confirm("Are you sure you want to delete this card?");
-                if (confirmed) {
-                    dataHandler.deleteCard(cardId);
-                    } else {
-                    this.loadBoards();
-                };
-              });
+            let cardId = el.dataset.id;
+            console.log(cardId);
+            let confirmed = confirm("Are you sure you want to delete this card?");
+            if (confirmed) {
+                dataHandler.deleteCard(cardId);
+            } else {
+                this.loadBoards();
+            }
+            ;
+        });
 
         var buttonNewBoard = document.getElementById('addNewCard');
         buttonNewBoard.addEventListener('click', function () {
             var boardTitle = prompt("Board title: ");
 
-            if ( boardTitle != null ) {
+            if (boardTitle != null) {
                 dataHandler.createNewBoard(boardTitle, dom.showBoards);
             }
         });
 
     },
-    loadCards: function(boardId) {
+    loadCards: function (boardId) {
         // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(boardId, this.showCards);
     },
-    showCards: function(cards) {
+    showCards: function (cards) {
         // add cards to the board
         // it adds necessary event listeners also
         if (cards.length !== 0) {
@@ -119,7 +121,7 @@ dom = {
     // here comes more features
 
 
-    generateCardNode: function(card) {
+    generateCardNode: function (card) {
         var cardNode = document.createElement("div");
         cardNode.id = "card_" + card.id;
         cardNode.classList.add("_card");
@@ -130,7 +132,7 @@ dom = {
         return cardNode;
     },
 
-    showStatuses: function(statusesArray, parentDomObj, board_id) {
+    showStatuses: function (statusesArray, parentDomObj, board_id) {
         // add status panels to the boards
         var htmlContentString = "";
         for (let status of statusesArray) {
@@ -150,7 +152,7 @@ dom = {
         dataHandler.getCardsByBoardId(board_id, dom.showCards);
     },
 
-    addNewCardButtons: function() {
+    addNewCardButtons: function () {
         var newPanelDomObjArray = document.querySelectorAll("[data-status='1']");
         for (let newPanel of newPanelDomObjArray) {
             var parentDomObjArray = newPanel.getElementsByClassName("new_card_wrapper");
@@ -161,13 +163,13 @@ dom = {
             var cardBtnDomObj = parentDomObjArray[0].getElementsByClassName("_newcard")[0];
             cardBtnDomObj.addEventListener("click", function () {
                 dom.turnContentIntoTextarea(function () {
-                   console.log("Create card");
+                    console.log("Create card");
                 }, this);
             });
         }
     },
 
-    turnContentIntoTextarea: function(callback, domObj) {
+    turnContentIntoTextarea: function (callback, domObj) {
         var currentText = domObj.textContent;
         domObj.innerHTML = `
                 <textarea id="edit_field" class="card" placeholder="New task ..."></textarea>
@@ -176,20 +178,17 @@ dom = {
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
-            dom.saveCardEventListener(function() {
-               console.log("Creating card");
-            }, textAreaObj, board_id);
+            dom.saveCardEventListener(textAreaObj, board_id);
         });
         textAreaObj.addEventListener("focusout", function () {
             dom.cancelChangeEventListener(currentText, textAreaObj);
         });
     },
 
-    saveCardEventListener: function(callback, domObject, board_id) {
+    saveCardEventListener: function (domObject, board_id) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
-            callback();
             var newCardTitle = domObject.value;
             dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
             dom.addNewCardButtons();

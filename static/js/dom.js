@@ -176,20 +176,17 @@ dom = {
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
-            dom.saveCardEventListener(function() {
-               console.log("Creating card");
-            }, textAreaObj, board_id);
+            dom.saveCardEventListener(gittextAreaObj, board_id);
         });
         textAreaObj.addEventListener("focusout", function () {
             dom.cancelChangeEventListener(currentText, textAreaObj);
         });
     },
 
-    saveCardEventListener: function(callback, domObject, board_id) {
+    saveCardEventListener: function(domObject, board_id) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
-            callback();
             var newCardTitle = domObject.value;
             dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
             dom.addNewCardButtons();

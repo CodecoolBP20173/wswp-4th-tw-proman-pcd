@@ -81,14 +81,15 @@ dom = {
                 };
               });
 
-        var buttonNewBoard = document.getElementById('addNewCard');
+        /*var buttonNewBoard = document.getElementById('addNewCard');
         buttonNewBoard.addEventListener('click', function () {
             var boardTitle = prompt("Board title: ");
 
             if ( boardTitle != null ) {
                 dataHandler.createNewBoard(boardTitle, dom.showBoards);
             }
-        });
+        });*/
+        dom.addNewBoardButton();
 
     },
     loadCards: function(boardId) {
@@ -176,7 +177,7 @@ dom = {
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
-            dom.saveCardEventListener(gittextAreaObj, board_id);
+            dom.saveCardEventListener(textAreaObj, board_id);
         });
         textAreaObj.addEventListener("focusout", function () {
             dom.cancelChangeEventListener(currentText, textAreaObj);
@@ -190,6 +191,50 @@ dom = {
             var newCardTitle = domObject.value;
             dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
             dom.addNewCardButtons();
+        }
+    },
+
+    addNewBoardButton: function () {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+
+        createBoardDiv.innerHTML = `
+            <h5 class="mb-0">
+                <button id="createBoardButton" class="btn btn-link">Add new Board</button>
+            </h5>
+        `;
+        let createNewBoardButton = document.getElementById('createBoardButton');
+        createNewBoardButton.addEventListener('click', function () {
+            dom.turnButtonIntoInput();
+        })
+    },
+
+    turnButtonIntoInput: function() {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+        createBoardDiv.innerHTML = `
+            <input id="createBoardInput"/>
+        `;
+
+        var createBoardInput = document.getElementById('createBoardInput');
+        createBoardInput.addEventListener("keydown", function () {
+            dom.saveBoardEventListener(createBoardInput);
+        });
+        createBoardInput.addEventListener("focusout", function () {
+            //dom.cancelChangeEventListener(currentText, textAreaObj);
+            createBoardInput.value = "";
+        });
+    },
+
+    saveBoardEventListener: function(domObject) {
+        var key = event.which || event.keyCode;
+        if (key == 13 && !event.shiftKey) {
+            event.preventDefault();
+            var newBoardTitle = domObject.value;
+
+            if (newBoardTitle !== "") {
+                dataHandler.createNewBoard(newBoardTitle, dom.showBoards);
+            }
+
+            dom.addNewBoardButton();
         }
     },
 

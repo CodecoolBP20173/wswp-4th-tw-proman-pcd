@@ -197,7 +197,7 @@ dom = {
 
         createBoardDiv.innerHTML = `
             <h5 class="mb-0">
-                <button id="createBoardButton" class="btn btn-link">Add new Board</button>
+                <button id="createBoardButton" class="card my_button btn btn-link">Add new Board</button>
             </h5>
         `;
         let createNewBoardButton = document.getElementById('createBoardButton');

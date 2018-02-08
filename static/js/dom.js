@@ -38,40 +38,49 @@ dom = {
             dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
         }
         dom.addNewCardButtons();
-        // dragula
+
+        // Drag & Drop functionality via DRAGULA
         var dragulaContainers = [];
         for (let i = 0; i < boards.length * 4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
-        dragula(dragulaContainers).on('drop', function (el) {
-            let parent = el.parentElement;
-            let grandparent = parent.parentElement;
-            let status = grandparent.dataset.status;
-            let id = el.dataset.id;
+        dragula(dragulaContainers, {
+                // remove item when dropped outside of containers option set
+                removeOnSpill: true
 
-            dataHandler.saveStatus(id, status);
-        }).on('drop', function (el) {
-            let parent = el.parentElement;
-            let cardArray = parent.getElementsByClassName("_card");
+            // save status when card is dropped
+            }).on('drop', function(el) {
+                let parent = el.parentElement;
+                let grandparent = parent.parentElement;
+                let status = grandparent.dataset.status;
+                let id = el.dataset.id;
+                dataHandler.saveStatus(id, status);
 
-            let idArray = [];
-            for (let x = 0; x < cardArray.length; x++) {
-                let idToPush = cardArray[x].dataset.id;
-                idArray.push(idToPush);
-            }
+            // save new order when card is dropped
+            }).on('drop', function (el) {
 
-            dataHandler.saveOrder(idArray);
-        });
+                let parent = el.parentElement;
+                let cardArray = parent.getElementsByClassName("_card");
+                let idArray = [];
+                for (let x = 0; x < cardArray.length; x++) {
+                    let idToPush = cardArray[x].dataset.id;
+                    idArray.push(idToPush);
+            };
+                dataHandler.saveOrder(idArray);
 
-        var buttonNewBoard = document.getElementById('addNewCard');
-        buttonNewBoard.addEventListener('click', function () {
-            var boardTitle = prompt("Board title: ");
+            // remove card when dropped outside of containers
+            }).on('remove', function (el) {
 
-            if (boardTitle != null) {
-                dataHandler.createNewBoard(boardTitle, dom.showBoards);
-            }
-        });
-
+                let cardId = el.dataset.id;
+                console.log(cardId);
+                let confirmed = confirm("Are you sure you want to delete this card?");
+                if (confirmed) {
+                    dataHandler.deleteCard(cardId);
+                    } else {
+                    this.loadBoards();
+                };
+              });
+        dom.addNewBoardButton();
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -88,6 +97,7 @@ dom = {
             for (let block of cardBlocksArray) {
                 block.innerHTML = "";
             }
+
 
             for (let card of cards) {
                 var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
@@ -177,6 +187,50 @@ dom = {
                 dataHandler.editCard(card_id, board_id, newCardTitle, dom.showCards);
 
             }
+        }
+    },
+
+    addNewBoardButton: function () {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+
+        createBoardDiv.innerHTML = `
+            <h5 class="mb-0">
+                <button id="createBoardButton" class="btn btn-link">Add new Board</button>
+            </h5>
+        `;
+        let createNewBoardButton = document.getElementById('createBoardButton');
+        createNewBoardButton.addEventListener('click', function () {
+            dom.turnButtonIntoInput();
+        })
+    },
+
+    turnButtonIntoInput: function() {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+        createBoardDiv.innerHTML = `
+            <input id="createBoardInput"/>
+        `;
+
+        var createBoardInput = document.getElementById('createBoardInput');
+        createBoardInput.addEventListener("keydown", function () {
+            dom.saveBoardEventListener(createBoardInput);
+        });
+        createBoardInput.addEventListener("focusout", function () {
+            //dom.cancelChangeEventListener(currentText, textAreaObj);
+            createBoardInput.value = "";
+        });
+    },
+
+    saveBoardEventListener: function(domObject) {
+        var key = event.which || event.keyCode;
+        if (key == 13 && !event.shiftKey) {
+            event.preventDefault();
+            var newBoardTitle = domObject.value;
+
+            if (newBoardTitle !== "") {
+                dataHandler.createNewBoard(newBoardTitle, dom.showBoards);
+            }
+
+            dom.addNewBoardButton();
         }
     },
 

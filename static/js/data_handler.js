@@ -73,6 +73,8 @@ dataHandler = {
         };
         dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
+        sortObj(this._data.cards, "order");
+        this._saveData();
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
         callback(cardsOfBoard);
     },
@@ -116,6 +118,15 @@ dataHandler = {
                 dataHandler._data.cards[i].order += 1;
             }
 
+        }
+    },
+    deleteCard: function (cardId) {
+        for (let i = 0; i < this._data.cards.length; i++) {
+            if (this._data.cards[i].id == cardId) {
+                this._data.cards.splice(i, 1);
+                console.log(this._data.cards);
+                this._saveData();
+            }
         }
     }
 };

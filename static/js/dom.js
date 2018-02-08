@@ -174,11 +174,13 @@ dom = {
 
     turnContentIntoTextarea: function (method, domObj) {
         var currentText = domObj.textContent;
+        var card_id =  domObj.dataset.id
         domObj.innerHTML = `
-                <textarea id="edit_field" class="card my_card my_hover" placeholder="New task ..."></textarea>
+                <textarea id="edit_field_${card_id}" class="card my_card my_hover" placeholder="New task ..."></textarea>
 
         `;
-        var textAreaObj = document.getElementById("edit_field");
+        var textAreaObj = domObj.firstElementChild;
+        textAreaObj.value = currentText;
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {

@@ -98,7 +98,9 @@ dataHandler = {
         sortObj(this._data.cards, "order");
         this._saveData();
     },
-    editCard: function (cardId, cardTitle, callback) {
+    editCard: function (cardId, boardId, cardTitle, callback) {
+        cardId = parseInt(cardId);
+        boardId = parseInt(boardId);
         let cards = this._data.cards;
         for (let i = 0; i < cards.length; i++){
             if (cards[i].id === cardId) {
@@ -106,8 +108,9 @@ dataHandler = {
                 break;
             }
         }
-        //this._saveData();
-        callback(this._data.cards);
+        this._saveData();
+        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
+        callback(cardsOfBoard);
     },
     increaseOrderNumber: function () {
         for (let i=0; i < dataHandler._data.cards.length; i++) {
@@ -125,6 +128,12 @@ dataHandler = {
                 this._saveData();
             }
         }
+    },
+    getBoardId: function (cardId) {
+        for (let i = 0; i < this._data.cards.length; i++) {
+            if (this._data.cards[i].id == cardId) {
+                return this._data.cards[i].board_id;
+            }
+        }
     }
-
 };

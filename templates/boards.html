@@ -13,6 +13,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js" defer></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css" />
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+        <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/hover.css') }}">
         <script src="{{ url_for('static', filename='js/utility.js') }}" defer></script>
         <script src="{{ url_for('static', filename='js/data_handler.js') }}" defer></script>
@@ -20,10 +21,11 @@
         <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
         <script src="{{ url_for('static', filename='js/sample_data.js') }}" defer></script>
     </head>
-
     <body class="my_background">
     <h1 class="navbar my_text">ProMan <img src="/static/img/PCD_300.gif" width="5%" height="5%" left="0"></h1>
+        <div id="createBoardDiv" class="card-header _boardhead"></div>
         <div id="accordion" class="container"></div>
+    <div id="trashbin"></div>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
                         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
                         crossorigin="anonymous"></script>

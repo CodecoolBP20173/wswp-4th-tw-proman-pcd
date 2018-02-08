@@ -29,7 +29,7 @@
 .my_text {
     color: #CEF9FC;
     background: rgb(0, 19, 81);
-    font-weight: bolder;
+    /*font-weight: bolder;*/
 }
 
 .my_button {

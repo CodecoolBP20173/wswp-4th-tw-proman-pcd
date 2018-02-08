@@ -79,10 +79,11 @@
 
 
 #trashbin {
-    background: url("https://www.shareicon.net/download/2017/04/22/884929_bin_512x512.png");
+    background: url("/static/img/waste-bin.svg");
     position: absolute;
     bottom: 20px;
     width: 100px;
     height: 100px;
     background-size: cover;
+    display: none;
 }

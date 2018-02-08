@@ -67,14 +67,27 @@ dom = {
                 el.style.maxHeight="80px";
             }).on('drop', function (el) {
                 el.style.maxHeight="content";
-            }).on('remove', function (el) {
+            }).on('drop', function (el, target) {
 
             if (target === document.getElementById("trashbin")) {
                 el.remove();
                 let cardId = el.dataset.id;
                 dataHandler.deleteCard(cardId);
             }
-        });
+            }).on('drag', function () {
+                document.getElementById("trashbin").style.display = "block";
+            }).on('dragend', function () {
+                document.getElementById("trashbin").style.display = "none";
+            }).on('over', function (el, container) {
+                if (container === document.getElementById("trashbin")) {
+                    document.getElementById("trashbin").style.opacity = ".3";
+                }
+            }).on('out', function (el, container) {
+                if (container === document.getElementById("trashbin")) {
+                    document.getElementById("trashbin").style.opacity = ".7";
+                }
+        })
+        ;
 
         dom.addNewBoardButton();
     },
@@ -161,11 +174,13 @@ dom = {
 
     turnContentIntoTextarea: function (method, domObj) {
         var currentText = domObj.textContent;
+        var card_id =  domObj.dataset.id
         domObj.innerHTML = `
-                <textarea id="edit_field" class="card my_card my_hover" placeholder="New task ..."></textarea>
+                <textarea id="edit_field_${card_id}" class="card my_card my_hover" placeholder="New task ..."></textarea>
 
         `;
-        var textAreaObj = document.getElementById("edit_field");
+        var textAreaObj = domObj.firstElementChild;
+        textAreaObj.value = currentText;
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {

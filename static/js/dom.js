@@ -10,6 +10,7 @@ dom = {
         // shows boards appending them to #accordion div
         // it adds necessary event listeners also
         var accordion = document.getElementById("accordion");
+        accordion.innerHTML = "";
 
         // create a div for each board. To populate them with cards, divs can be referred to via board.id
         for (let board of boards) {
@@ -62,6 +63,14 @@ dom = {
             dataHandler.saveOrder(idArray);
         });
 
+        var buttonNewBoard = document.getElementById('addNewCard');
+        buttonNewBoard.addEventListener('click', function () {
+            var boardTitle = prompt("Board title: ");
+
+            if ( boardTitle != null ) {
+                dataHandler.createNewBoard(boardTitle, dom.showBoards);
+            }
+        });
 
     },
     loadCards: function(boardId) {
@@ -71,12 +80,22 @@ dom = {
     showCards: function(cards) {
         // add cards to the board
         // it adds necessary event listeners also
-        var grandParentObj = document.getElementById("board_" + cards[0].board_id);
-        for (let card of cards) {
-            var parentObject= grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
-            var cardNode = dom.generateCardNode(card);
-            var targetObjectArray = parentObject.getElementsByClassName("card-block");
-            targetObjectArray[0].appendChild(cardNode);
+        if (cards.length !== 0) {
+            //TODO: if the card list is empty, all die
+            var grandParentObj = document.getElementById("board_" + cards[0].board_id);
+            var cardBlocksArray = grandParentObj.getElementsByClassName("card-block");
+
+            for (let block of cardBlocksArray) {
+                block.innerHTML = "";
+            }
+
+
+            for (let card of cards) {
+                var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
+                var cardNode = dom.generateCardNode(card);
+                var targetObjectArray = parentObject.getElementsByClassName("card-block");
+                targetObjectArray[0].appendChild(cardNode);
+            }
         }
     },
     // here comes more features
@@ -114,7 +133,7 @@ dom = {
 
     addNewCardButtons: function() {
         var newPanelDomObjArray = document.querySelectorAll("[data-status='1']");
-        for (newPanel of newPanelDomObjArray) {
+        for (let newPanel of newPanelDomObjArray) {
             var parentDomObjArray = newPanel.getElementsByClassName("new_card_wrapper");
             var board_id = getFirstAncestorByClass(parentDomObjArray[0], "_boardhead").dataset.board_id;
             parentDomObjArray[0].innerHTML = `
@@ -136,19 +155,24 @@ dom = {
         `;
         var textAreaObj = document.getElementById("edit_field");
         textAreaObj.focus();
+        var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
             dom.saveCardEventListener(function() {
                console.log("Creating card");
-            }, currentHTMLContent, textAreaObj);
+            }, currentHTMLContent, textAreaObj, board_id);
         });
     },
 
-    saveCardEventListener: function(callback, oldHTMLContent, domObject) {
+    saveCardEventListener: function(callback, oldHTMLContent, domObject, board_id) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
             callback();
-            domObject.parentNode.innerHTML = oldHTMLContent;
+            var newCardTitle = domObject.value;
+            dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
+            dom.addNewCardButtons();
+            //domObject.parentNode.innerHTML = oldHTMLContent;
+
         }
     }
 }

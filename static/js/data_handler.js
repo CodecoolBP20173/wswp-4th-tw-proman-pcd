@@ -50,8 +50,16 @@ dataHandler = {
         // the card is retrieved and then the callback function is called with the card
         //NO NEED FOR THIS (YET)
     },
-    createNewBoard: function(boardTitle, callback) {
-        // creates new board, saves it and calls the callback function with its data
+    createNewBoard: function (boardTitle, callBack) {
+        let newBoardId = getNewId(this._data, "boards");
+        let newBoard = {
+            id: newBoardId,
+            title: boardTitle,
+            is_active: true
+        };
+        this._data["boards"].push(newBoard);
+        this._saveData();
+        callBack(this._data.boards);
     },
     createNewCard: function(cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
@@ -59,12 +67,14 @@ dataHandler = {
         let newCard = {
             id: newCardID,
             title: cardTitle,
-            board_id: boardId,
-            status_id: statusId,
+            board_id: parseInt(boardId),
+            status_id: 1,
             order: 1
         };
+        dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
-        callback();
+        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
+        callback(cardsOfBoard);
     },
     saveStatus: function (cardId, status) {
         for (let x of this._data.cards) {
@@ -78,13 +88,32 @@ dataHandler = {
         for (var x of this._data.cards) {
             for (var id of orderArray) {
                 if (x.id == id) {
-                    x.order = orderArray.indexOf(id)+1;
+                    x.order = orderArray.indexOf(id) + 1;
                 }
             }
         }
 
         sortObj(this._data.cards, "order");
         this._saveData();
+    },
+    editCard: function (cardId, cardTitle, callback) {
+        //TODO: bekötni a card namehez
+        let cards = this._data.cards;
+        for (let i = 0; i < cards.length; i++){
+            if (cards[i].id === cardId) {
+                cards[i].title = cardTitle;
+                break;
+            }
+        }
+        //this._saveData();
+        callback(this._data.cards);
+    },
+    increaseOrderNumber: function () {
+        for (let i=0; i < dataHandler._data.cards.length; i++) {
+            if (dataHandler._data.cards[i].status_id === 1){
+                dataHandler._data.cards[i].order += 1;
+            }
+
+        }
     }
-    // here comes more features
 };

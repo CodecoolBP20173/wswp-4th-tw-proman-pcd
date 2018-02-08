@@ -76,7 +76,7 @@ dom = {
             }
             }).on('drag', function () {
                 document.getElementById("trashbin").style.display = "block";
-            }).on('drop', function () {
+            }).on('dragend', function () {
                 document.getElementById("trashbin").style.display = "none";
             }).on('over', function (el, container) {
                 if (container === document.getElementById("trashbin")) {
@@ -84,7 +84,7 @@ dom = {
                 }
             }).on('out', function (el, container) {
                 if (container === document.getElementById("trashbin")) {
-                    document.getElementById("trashbin").style.opacity = ".7git";
+                    document.getElementById("trashbin").style.opacity = ".7";
                 }
         })
         ;

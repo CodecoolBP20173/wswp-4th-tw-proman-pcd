@@ -160,16 +160,16 @@ dom = {
             `;
             var cardBtnDomObj = parentDomObjArray[0].getElementsByClassName("_newcard")[0];
             cardBtnDomObj.addEventListener("click", function () {
-                dom.turnContentIntoInput(function () {
+                dom.turnContentIntoTextarea(function () {
                    console.log("Create card");
                 }, this);
             });
         }
     },
 
-    turnContentIntoInput: function(callback, domObj) {
-        var currentHTMLContent = domObj.parentNode.innerHTML;
-        domObj.parentNode.innerHTML = `
+    turnContentIntoTextarea: function(callback, domObj) {
+        var currentText = domObj.textContent;
+        domObj.innerHTML = `
                 <textarea id="edit_field" class="card" placeholder="New task ..."></textarea>
         `;
         var textAreaObj = document.getElementById("edit_field");
@@ -178,11 +178,14 @@ dom = {
         textAreaObj.addEventListener("keydown", function () {
             dom.saveCardEventListener(function() {
                console.log("Creating card");
-            }, currentHTMLContent, textAreaObj, board_id);
+            }, textAreaObj, board_id);
+        });
+        textAreaObj.addEventListener("focusout", function () {
+            dom.cancelChangeEventListener(currentText, textAreaObj);
         });
     },
 
-    saveCardEventListener: function(callback, oldHTMLContent, domObject, board_id) {
+    saveCardEventListener: function(callback, domObject, board_id) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
@@ -190,8 +193,10 @@ dom = {
             var newCardTitle = domObject.value;
             dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
             dom.addNewCardButtons();
-            //domObject.parentNode.innerHTML = oldHTMLContent;
-
         }
+    },
+
+    cancelChangeEventListener: function (oldText, domObject) {
+        domObject.parentNode.innerHTML = oldText;
     }
-}
+};

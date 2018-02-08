@@ -180,7 +180,9 @@ dom = {
 
         `;
         var textAreaObj = domObj.firstElementChild;
-        textAreaObj.value = currentText;
+        if (method == "edit") {
+          textAreaObj.value = currentText;
+        }
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {

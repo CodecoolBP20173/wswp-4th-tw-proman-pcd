@@ -115,5 +115,15 @@ dataHandler = {
             }
 
         }
+    },
+    deleteCard: function (cardId) {
+        for (let i = 0; i < this._data.cards.length; i++) {
+            if (this._data.cards[i].id == cardId) {
+                this._data.cards.splice(i, 1);
+                console.log(this._data.cards);
+                this._saveData();
+            }
+        }
     }
+
 };

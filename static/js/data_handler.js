@@ -96,8 +96,9 @@ dataHandler = {
         sortObj(this._data.cards, "order");
         this._saveData();
     },
-    editCard: function (cardId, cardTitle, callback) {
-        //TODO: bekötni a card namehez
+    editCard: function (cardId, boardId, cardTitle, callback) {
+        cardId = parseInt(cardId);
+        boardId = parseInt(boardId);
         let cards = this._data.cards;
         for (let i = 0; i < cards.length; i++){
             if (cards[i].id === cardId) {
@@ -105,8 +106,9 @@ dataHandler = {
                 break;
             }
         }
-        //this._saveData();
-        callback(this._data.cards);
+        this._saveData();
+        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
+        callback(cardsOfBoard);
     },
     increaseOrderNumber: function () {
         for (let i=0; i < dataHandler._data.cards.length; i++) {

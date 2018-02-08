@@ -15,19 +15,19 @@ dom = {
         // create a div for each board. To populate them with cards, divs can be referred to via board.id
         for (let board of boards) {
             var div = document.createElement('div');
-            div.classList.add("card");
-            div.setAttribute("id", "board_" + board.id);
+            div.classList.add("card", "my_background", "test_margin");
+            div.setAttribute("id", "board_"+board.id);
             div.innerHTML = `
-                    <div class="card-header _boardhead" id="heading_${board.id}" data-board_id="${board.id}">
+                    <div class="card-header _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
                         <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
+                            <button class="btn btn-link my_button" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
                                     aria-controls="collapseOne">
                                 ${board.title}
                             </button>
                         </h5>
                     </div>
     
-                    <div id="board_id${board.id}" class="collapse hide" aria-labelledby="heading_${board.id}" data-parent="#accordion">
+                    <div id="board_id${board.id}" class="my_background collapse hide" aria-labelledby="heading_${board.id}" data-parent="#accordion">
                         <div class="_board_body card-body row">
                             Status panels come here
                         </div>
@@ -56,17 +56,18 @@ dom = {
         }).on('drop', function (el) {
 
             let parent = el.parentElement;
-            let cardArray = parent.getElementsByClassName("_card");
+            let cardArray = parent.getElementsByClassName("my_card");
             let idArray = [];
             for (let x = 0; x < cardArray.length; x++) {
                 let idToPush = cardArray[x].dataset.id;
                 idArray.push(idToPush);
-            }
-            ;
-            dataHandler.saveOrder(idArray);
-
-            // remove card when dropped outside of containers
-        }).on('drop', function (el, target) {
+                }
+                dataHandler.saveOrder(idArray);
+            }).on('drag', function (el) {
+                el.style.maxHeight="80px";
+            }).on('drop', function (el) {
+                el.style.maxHeight="content";
+            }).on('remove', function (el) {
 
             if (target === document.getElementById("trashbin")) {
                 el.remove();
@@ -97,23 +98,29 @@ dom = {
             for (let card of cards) {
                 var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
                 var cardNode = dom.generateCardNode(card);
+                cardNode.classList.add("hvr-bob", "my_hover");
                 var targetObjectArray = parentObject.getElementsByClassName("card-block");
                 var cardObj = targetObjectArray[0].appendChild(cardNode);
                 cardObj.addEventListener("click", function () {
                     dom.turnContentIntoTextarea("edit", this);
                 });
             }
+
         }
     },
+
 
     generateCardNode: function (card) {
         var cardNode = document.createElement("div");
         cardNode.id = "card_" + card.id;
-        cardNode.classList.add("_card");
+        cardNode.classList.add("my_card");
         cardNode.classList.add("card");
         cardNode.dataset.id = card.id;
         var cardTextNode = document.createTextNode(card.title);
-        cardNode.appendChild(cardTextNode);
+        var paragraphNode = document.createElement("p");
+        paragraphNode.classList.add("text-center");
+        cardNode.appendChild(paragraphNode);
+        paragraphNode.appendChild(cardTextNode);
         return cardNode;
     },
 
@@ -122,8 +129,8 @@ dom = {
         var htmlContentString = "";
         for (let status of statusesArray) {
             htmlContentString += `
-                    <div class="card col _statuspanel" data-status="${status.id}">
-                        <div class="card-header">
+                    <div class="card col _statuspanel my_text my_board_${status.id}" data-status="${status.id}">
+                        <div class="card-header my_header">
                             ${status.name}
                         </div>
                         <div class="card-block">
@@ -143,7 +150,7 @@ dom = {
             var parentDomObjArray = newPanel.getElementsByClassName("new_card_wrapper");
             var board_id = getFirstAncestorByClass(parentDomObjArray[0], "_boardhead").dataset.board_id;
             parentDomObjArray[0].innerHTML = `
-                <div class="card _btn _newcard" data-board_id="${board_id}">ADD NEW CARD</div>
+                <div class="card _btn _newcard my_card my_hover" data-board_id="${board_id}">ADD NEW CARD</div>
             `;
             var cardBtnDomObj = parentDomObjArray[0].getElementsByClassName("_newcard")[0];
             cardBtnDomObj.addEventListener("click", function () {
@@ -155,7 +162,8 @@ dom = {
     turnContentIntoTextarea: function (method, domObj) {
         var currentText = domObj.textContent;
         domObj.innerHTML = `
-                <textarea id="edit_field" class="card" placeholder="New task ..."></textarea>
+                <textarea id="edit_field" class="card my_card my_hover" placeholder="New task ..."></textarea>
+
         `;
         var textAreaObj = document.getElementById("edit_field");
         textAreaObj.focus();
@@ -189,7 +197,7 @@ dom = {
 
         createBoardDiv.innerHTML = `
             <h5 class="mb-0">
-                <button id="createBoardButton" class="btn btn-link">Add new Board</button>
+                <button id="createBoardButton" class="card my_button btn btn-link">Add new Board</button>
             </h5>
         `;
         let createNewBoardButton = document.getElementById('createBoardButton');

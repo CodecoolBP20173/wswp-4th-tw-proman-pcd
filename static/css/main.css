@@ -3,8 +3,77 @@
 }
 
 .card-block {
-    min-height: 100px;
+    min-height: 80px;
     min-width: 10px;
+    height: 100%;
+
+}
+.my_card {
+    min-height: fit-content;
+    height: 80px;
+    width: 70%;
+    left: 15%;
+    right: 15%;
+    margin: 15px 0;
+
+}
+
+.my_hover:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.my_hover {
+    background: rgb(0, 19, 81);
+}
+
+.my_text {
+    color: #CEF9FC;
+    background: rgb(0, 19, 81);
+    font-weight: bolder;
+}
+
+.my_button {
+    color: #cef9fc !important;
+    text-decoration: none !important;
+}
+
+.my_background {
+    background: #000000 !important;
+}
+
+._statuspanel {
+    margin: 0 10px;
+    padding: 0 !important;
+}
+
+.test_margin {
+    margin-top: 20px;
+}
+
+.my_board_1 {
+    background: #b10a39 !important;
+}
+
+
+.my_board_2 {
+    background: #d3390c /*#e5821c*/ !important;
+}
+
+.my_board_3 {
+    background: #f78b1c !important;
+}
+
+.my_board_4 {
+    background: #f9aa1d !important;
+}
+
+.my_header {
+    height: 50px;
+}
+
+.my_board_1 .card-block {
+    min-height: 0 !important;
+    max-height: min-content;
 }
 
 
@@ -16,4 +85,4 @@
     width: 100px;
     height: 100px;
     background-size: cover;
-git}
+}

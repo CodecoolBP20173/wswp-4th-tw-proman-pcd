@@ -67,14 +67,27 @@ dom = {
                 el.style.maxHeight="80px";
             }).on('drop', function (el) {
                 el.style.maxHeight="content";
-            }).on('remove', function (el) {
+            }).on('drop', function (el, target) {
 
             if (target === document.getElementById("trashbin")) {
                 el.remove();
                 let cardId = el.dataset.id;
                 dataHandler.deleteCard(cardId);
             }
-        });
+            }).on('drag', function () {
+                document.getElementById("trashbin").style.display = "block";
+            }).on('drop', function () {
+                document.getElementById("trashbin").style.display = "none";
+            }).on('over', function (el, container) {
+                if (container === document.getElementById("trashbin")) {
+                    document.getElementById("trashbin").style.opacity = ".3";
+                }
+            }).on('out', function (el, container) {
+                if (container === document.getElementById("trashbin")) {
+                    document.getElementById("trashbin").style.opacity = ".7git";
+                }
+        })
+        ;
 
         dom.addNewBoardButton();
     },

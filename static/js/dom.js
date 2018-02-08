@@ -75,15 +75,6 @@ dom = {
             }
         });
 
-        var buttonNewBoard = document.getElementById('addNewCard');
-        buttonNewBoard.addEventListener('click', function () {
-            var boardTitle = prompt("Board title: ");
-
-            if (boardTitle != null) {
-                dataHandler.createNewBoard(boardTitle, dom.showBoards);
-            }
-        });
-
         dom.addNewBoardButton();
     },
     loadCards: function (boardId) {

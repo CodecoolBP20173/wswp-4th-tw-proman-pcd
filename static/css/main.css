@@ -6,3 +6,11 @@
     min-height: 100px;
     min-width: 10px;
 }
+
+#trashbin {
+    position: fixed;
+    bottom: 0px;
+    padding:20px;
+    opacity: 20%;
+
+}

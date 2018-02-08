@@ -40,16 +40,11 @@ dom = {
         dom.addNewCardButtons();
 
         // Drag & Drop functionality via DRAGULA
-        var dragulaContainers = [];
+        var dragulaContainers = [document.getElementById("trashbin")];
         for (let i = 0; i < boards.length * 4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
-        dragula(dragulaContainers, {
-            // remove item when dropped outside of containers option set
-            removeOnSpill: true
-
-            // save status when card is dropped
-        }).on('drop', function (el) {
+        dragula(dragulaContainers).on('drop', function (el) {
             let parent = el.parentElement;
             let grandparent = parent.parentElement;
             let status = grandparent.dataset.status;
@@ -70,17 +65,13 @@ dom = {
             dataHandler.saveOrder(idArray);
 
             // remove card when dropped outside of containers
-        }).on('remove', function (el) {
+        }).on('drop', function (el, target) {
 
-            let cardId = el.dataset.id;
-            console.log(cardId);
-            let confirmed = confirm("Are you sure you want to delete this card?");
-            if (confirmed) {
+            if (target === document.getElementById("trashbin")) {
+                el.remove();
+                let cardId = el.dataset.id;
                 dataHandler.deleteCard(cardId);
-            } else {
-                this.loadBoards();
             }
-            ;
         });
 
         var buttonNewBoard = document.getElementById('addNewCard');

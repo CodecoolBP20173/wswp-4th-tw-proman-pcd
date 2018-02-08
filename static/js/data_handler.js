@@ -15,7 +15,7 @@ dataHandler = {
     _saveData: function() {
         // it is not called from outside
         // saves the data from this._data to local storage
-        var dataString = JSON.stringify(this._data);
+        var dataString = JSON.stringify(dataHandler._data);
         localStorage.setItem("proman-data", dataString);
 
     },

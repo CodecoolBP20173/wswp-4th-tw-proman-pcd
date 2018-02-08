@@ -63,14 +63,15 @@ dom = {
             dataHandler.saveOrder(idArray);
         });
 
-        var buttonNewBoard = document.getElementById('addNewCard');
+        /*var buttonNewBoard = document.getElementById('addNewCard');
         buttonNewBoard.addEventListener('click', function () {
             var boardTitle = prompt("Board title: ");
 
             if ( boardTitle != null ) {
                 dataHandler.createNewBoard(boardTitle, dom.showBoards);
             }
-        });
+        });*/
+        dom.addNewBoardButton();
 
     },
     loadCards: function(boardId) {
@@ -175,6 +176,24 @@ dom = {
             dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
             dom.addNewCardButtons();
         }
+    },
+
+    addNewBoardButton: function () {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+        createBoardDiv.innerHTML = `
+            <button id="createBoardButton">Add new Board</button>
+        `;
+        let createNewBoardButton = document.getElementById('createBoardButton');
+        createNewBoardButton.addEventListener('click', function () {
+            dom.turnButtonIntoInput();
+        })
+    },
+
+    turnButtonIntoInput: function() {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+        createBoardDiv.innerHTML = `
+            <input id="createBoardInput"/>
+        `;
     },
 
     cancelChangeEventListener: function (oldText, domObject) {

@@ -128,5 +128,12 @@ dataHandler = {
                 this._saveData();
             }
         }
+    },
+    getBoardId: function (cardId) {
+        for (let i = 0; i < this._data.cards.length; i++) {
+            if (this._data.cards[i].id == cardId) {
+                return this._data.cards[i].board_id;
+            }
+        }
     }
 };

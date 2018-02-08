@@ -8,7 +8,7 @@ dom = {
     },
     showBoards: function (boards) {
         // shows boards appending them to #accordion div
-        // it adds necessary event listeners also
+        // it adds drag and drop functionality
         var accordion = document.getElementById("accordion");
         accordion.innerHTML = "";
 
@@ -40,46 +40,50 @@ dom = {
         dom.addNewCardButtons();
 
         // Drag & Drop functionality via DRAGULA
-        var dragulaContainers = [];
+        var dragulaContainers = [document.getElementById("trashbin")];
+
         for (let i = 0; i < boards.length * 4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
-        dragula(dragulaContainers, {
-                // remove item when dropped outside of containers option set
-                removeOnSpill: true
-
-            // save status when card is dropped
-            }).on('drop', function(el) {
-                let parent = el.parentElement;
-                let grandparent = parent.parentElement;
-                let status = grandparent.dataset.status;
-                let id = el.dataset.id;
-                dataHandler.saveStatus(id, status);
+        dragula(dragulaContainers).on('drop', function (el) {
+            let parent = el.parentElement;
+            let grandparent = parent.parentElement;
+            let status = grandparent.dataset.status;
+            let id = el.dataset.id;
+            dataHandler.saveStatus(id, status);
 
             // save new order when card is dropped
-            }).on('drop', function (el) {
+        }).on('drop', function (el) {
 
-                let parent = el.parentElement;
-                let cardArray = parent.getElementsByClassName("_card");
-                let idArray = [];
-                for (let x = 0; x < cardArray.length; x++) {
-                    let idToPush = cardArray[x].dataset.id;
-                    idArray.push(idToPush);
-            };
-                dataHandler.saveOrder(idArray);
+            let parent = el.parentElement;
+            let cardArray = parent.getElementsByClassName("_card");
+            let idArray = [];
+            for (let x = 0; x < cardArray.length; x++) {
+                let idToPush = cardArray[x].dataset.id;
+                idArray.push(idToPush);
+            }
+            ;
+            dataHandler.saveOrder(idArray);
 
             // remove card when dropped outside of containers
-            }).on('remove', function (el) {
+        }).on('drop', function (el, target) {
 
+            if (target === document.getElementById("trashbin")) {
+                el.remove();
                 let cardId = el.dataset.id;
-                console.log(cardId);
-                let confirmed = confirm("Are you sure you want to delete this card?");
-                if (confirmed) {
-                    dataHandler.deleteCard(cardId);
-                    } else {
-                    this.loadBoards();
-                };
-              });
+                dataHandler.deleteCard(cardId);
+            }
+        });
+
+        var buttonNewBoard = document.getElementById('addNewCard');
+        buttonNewBoard.addEventListener('click', function () {
+            var boardTitle = prompt("Board title: ");
+
+            if (boardTitle != null) {
+                dataHandler.createNewBoard(boardTitle, dom.showBoards);
+            }
+        });
+
         dom.addNewBoardButton();
     },
     loadCards: function (boardId) {
@@ -110,7 +114,6 @@ dom = {
             }
         }
     },
-    // here comes more features
 
     generateCardNode: function (card) {
         var cardNode = document.createElement("div");

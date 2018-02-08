@@ -196,8 +196,11 @@ dom = {
 
     addNewBoardButton: function () {
         let createBoardDiv = document.getElementById('createBoardDiv');
+
         createBoardDiv.innerHTML = `
-            <button id="createBoardButton">Add new Board</button>
+            <h5 class="mb-0">
+                <button id="createBoardButton" class="btn btn-link">Add new Board</button>
+            </h5>
         `;
         let createNewBoardButton = document.getElementById('createBoardButton');
         createNewBoardButton.addEventListener('click', function () {

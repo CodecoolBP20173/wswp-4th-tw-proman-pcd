@@ -78,7 +78,16 @@ dom = {
                 document.getElementById("trashbin").style.display = "block";
             }).on('drop', function () {
                 document.getElementById("trashbin").style.display = "none";
-            });
+            }).on('over', function (el, container) {
+                if (container === document.getElementById("trashbin")) {
+                    document.getElementById("trashbin").style.opacity = ".3";
+                }
+            }).on('out', function (el, container) {
+                if (container === document.getElementById("trashbin")) {
+                    document.getElementById("trashbin").style.opacity = ".7git";
+                }
+        })
+        ;
 
         dom.addNewBoardButton();
     },

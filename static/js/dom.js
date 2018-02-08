@@ -177,7 +177,7 @@ dom = {
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
-            dom.saveCardEventListener(gittextAreaObj, board_id);
+            dom.saveCardEventListener(textAreaObj, board_id);
         });
         textAreaObj.addEventListener("focusout", function () {
             dom.cancelChangeEventListener(currentText, textAreaObj);
@@ -210,6 +210,29 @@ dom = {
         createBoardDiv.innerHTML = `
             <input id="createBoardInput"/>
         `;
+
+        var createBoardInput = document.getElementById('createBoardInput');
+        createBoardInput.addEventListener("keydown", function () {
+            dom.saveBoardEventListener(createBoardInput);
+        });
+        createBoardInput.addEventListener("focusout", function () {
+            //dom.cancelChangeEventListener(currentText, textAreaObj);
+            createBoardInput.value = "";
+        });
+    },
+
+    saveBoardEventListener: function(domObject) {
+        var key = event.which || event.keyCode;
+        if (key == 13 && !event.shiftKey) {
+            event.preventDefault();
+            var newBoardTitle = domObject.value;
+
+            if (newBoardTitle !== "") {
+                dataHandler.createNewBoard(newBoardTitle, dom.showBoards);
+            }
+
+            dom.addNewBoardButton();
+        }
     },
 
     cancelChangeEventListener: function (oldText, domObject) {

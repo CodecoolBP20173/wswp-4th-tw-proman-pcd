@@ -50,14 +50,14 @@ sampleData = {
             "id": 1,
             "title": "List questions",
             "board_id": 1,
-            "status_id": 1,
+            "status_id": 4,
             "order": 1
         },
         {
             "id": 2,
             "title": "Display a question",
             "board_id": 1,
-            "status_id": 1,
+            "status_id": 4,
             "order": 2
         },
         {
@@ -71,21 +71,21 @@ sampleData = {
             "id": 4,
             "title": "Sort questions",
             "board_id": 1,
-            "status_id": 1,
+            "status_id": 4,
             "order": 4
         },
         {
             "id": 5,
             "title": "Edit a question",
             "board_id": 1,
-            "status_id": 1,
+            "status_id": 3,
             "order": 5
         },
         {
             "id": 6,
             "title": "Delete question",
             "board_id": 1,
-            "status_id": 1,
+            "status_id": 2,
             "order": 6
         },
         {
@@ -99,7 +99,7 @@ sampleData = {
             "id": 8,
             "title": "Delete an answer",
             "board_id": 1,
-            "status_id": 1,
+            "status_id": 2,
             "order": 8
         },
         {
@@ -122,28 +122,28 @@ sampleData = {
             "id": 11,
             "title": "Use database",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 3,
             "order": 1
         },
         {
             "id": 12,
             "title": "Sort questions",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 4,
             "order": 2
         },
         {
             "id": 13,
             "title": "Display latest questions",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 4,
             "order": 3
         },
         {
             "id": 14,
             "title": "Search questions",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 3,
             "order": 4
         },
         {
@@ -157,28 +157,28 @@ sampleData = {
             "id": 16,
             "title": "Edit answer",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 2,
             "order": 6
         },
         {
             "id": 17,
             "title": "Add comment to question",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 2,
             "order": 7
         },
         {
             "id": 18,
             "title": "Add comment to answer",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 2,
             "order": 8
         },
         {
             "id": 19,
             "title": "Edit comments",
             "board_id": 2,
-            "status_id": 1,
+            "status_id": 2,
             "order": 9
         },
         {
@@ -208,35 +208,35 @@ sampleData = {
             "id": 23,
             "title": "User registration",
             "board_id": 3,
-            "status_id": 1,
+            "status_id": 4,
             "order": 1
         },
         {
             "id": 24,
             "title": "User login",
             "board_id": 3,
-            "status_id": 1,
+            "status_id": 4,
             "order": 2
         },
         {
             "id": 25,
             "title": "List users",
             "board_id": 3,
-            "status_id": 1,
+            "status_id": 3,
             "order": 3
         },
         {
             "id": 26,
             "title": "Bind questions to user",
             "board_id": 3,
-            "status_id": 1,
+            "status_id": 2,
             "order": 4
         },
         {
             "id": 27,
             "title": "Bind answer to user",
             "board_id": 3,
-            "status_id": 1,
+            "status_id": 2,
             "order": 5
         },
         {
@@ -250,7 +250,7 @@ sampleData = {
             "id": 29,
             "title": "User page",
             "board_id": 3,
-            "status_id": 1,
+            "status_id": 3,
             "order": 7
         },
         {
@@ -287,42 +287,42 @@ sampleData = {
             "id": 34,
             "title": "Development/Create an enviroment",
             "board_id": 4,
-            "status_id": 1,
+            "status_id": 4,
             "order": 1
         },
         {
             "id": 35,
             "title": "Boards/List page",
             "board_id": 4,
-            "status_id": 1,
+            "status_id": 4,
             "order": 2
         },
         {
             "id": 36,
             "title": "Boards/Detailed page",
             "board_id": 4,
-            "status_id": 1,
+            "status_id": 4,
             "order": 3
         },
         {
             "id": 37,
             "title": "Cards/Order",
             "board_id": 4,
-            "status_id": 1,
+            "status_id": 4,
             "order": 4
         },
         {
             "id": 38,
             "title": "Cards/Statuses",
             "board_id": 4,
-            "status_id": 1,
+            "status_id": 4,
             "order": 5
         },
         {
             "id": 39,
             "title": "Cards/Edit title",
             "board_id": 4,
-            "status_id": 1,
+            "status_id": 4,
             "order": 6
         }
     ]

@@ -41,6 +41,7 @@ dom = {
 
         // Drag & Drop functionality via DRAGULA
         var dragulaContainers = [document.getElementById("trashbin")];
+
         for (let i = 0; i < boards.length * 4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
@@ -83,6 +84,7 @@ dom = {
             }
         });
 
+        dom.addNewBoardButton();
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -105,12 +107,13 @@ dom = {
                 var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
                 var cardNode = dom.generateCardNode(card);
                 var targetObjectArray = parentObject.getElementsByClassName("card-block");
-                targetObjectArray[0].appendChild(cardNode);
+                var cardObj = targetObjectArray[0].appendChild(cardNode);
+                cardObj.addEventListener("click", function () {
+                    dom.turnContentIntoTextarea("edit", this);
+                });
             }
         }
     },
-    // here comes more features
-
 
     generateCardNode: function (card) {
         var cardNode = document.createElement("div");
@@ -153,14 +156,12 @@ dom = {
             `;
             var cardBtnDomObj = parentDomObjArray[0].getElementsByClassName("_newcard")[0];
             cardBtnDomObj.addEventListener("click", function () {
-                dom.turnContentIntoTextarea(function () {
-                    console.log("Create card");
-                }, this);
+                dom.turnContentIntoTextarea("add", this);
             });
         }
     },
 
-    turnContentIntoTextarea: function (callback, domObj) {
+    turnContentIntoTextarea: function (method, domObj) {
         var currentText = domObj.textContent;
         domObj.innerHTML = `
                 <textarea id="edit_field" class="card" placeholder="New task ..."></textarea>
@@ -169,20 +170,70 @@ dom = {
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
         textAreaObj.addEventListener("keydown", function () {
-            dom.saveCardEventListener(textAreaObj, board_id);
+            dom.saveCardEventListener(method, textAreaObj, board_id);
         });
         textAreaObj.addEventListener("focusout", function () {
             dom.cancelChangeEventListener(currentText, textAreaObj);
         });
     },
 
-    saveCardEventListener: function (domObject, board_id) {
+    saveCardEventListener: function (method, domObject, board_id) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
             var newCardTitle = domObject.value;
-            dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
-            dom.addNewCardButtons();
+            if (method === "add") {
+                dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
+                dom.addNewCardButtons();
+            } else if (method === "edit") {
+                card_id = domObject.parentNode.dataset.id;
+                dataHandler.editCard(card_id, board_id, newCardTitle, dom.showCards);
+
+            }
+        }
+    },
+
+    addNewBoardButton: function () {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+
+        createBoardDiv.innerHTML = `
+            <h5 class="mb-0">
+                <button id="createBoardButton" class="btn btn-link">Add new Board</button>
+            </h5>
+        `;
+        let createNewBoardButton = document.getElementById('createBoardButton');
+        createNewBoardButton.addEventListener('click', function () {
+            dom.turnButtonIntoInput();
+        })
+    },
+
+    turnButtonIntoInput: function() {
+        let createBoardDiv = document.getElementById('createBoardDiv');
+        createBoardDiv.innerHTML = `
+            <input id="createBoardInput"/>
+        `;
+
+        var createBoardInput = document.getElementById('createBoardInput');
+        createBoardInput.addEventListener("keydown", function () {
+            dom.saveBoardEventListener(createBoardInput);
+        });
+        createBoardInput.addEventListener("focusout", function () {
+            //dom.cancelChangeEventListener(currentText, textAreaObj);
+            createBoardInput.value = "";
+        });
+    },
+
+    saveBoardEventListener: function(domObject) {
+        var key = event.which || event.keyCode;
+        if (key == 13 && !event.shiftKey) {
+            event.preventDefault();
+            var newBoardTitle = domObject.value;
+
+            if (newBoardTitle !== "") {
+                dataHandler.createNewBoard(newBoardTitle, dom.showBoards);
+            }
+
+            dom.addNewBoardButton();
         }
     },
 

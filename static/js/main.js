@@ -2,6 +2,8 @@
 function init() {
     dom.loadBoards();
     // it uses the dom.js to show boards
+    window.addEventListener("load", dom.adaptSize);
+    window.addEventListener("resize", dom.adaptSize);
 }
 
 init();

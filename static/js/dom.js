@@ -28,8 +28,8 @@ dom = {
                     </div>
     
                     <div id="board_id${board.id}" class="my_background collapse hide" aria-labelledby="heading_${board.id}" data-parent="#accordion">
-                        <div class="_board_body card-body row">
-                            Status panels come here
+                        <div class="_board_body card-body row justify-content-around">
+                            <!--Status panels come here-->
                         </div>
                     </div>
             `;
@@ -107,7 +107,6 @@ dom = {
                 block.innerHTML = "";
             }
 
-
             for (let card of cards) {
                 var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
                 var cardNode = dom.generateCardNode(card);
@@ -142,18 +141,19 @@ dom = {
         var htmlContentString = "";
         for (let status of statusesArray) {
             htmlContentString += `
-                    <div class="card col _statuspanel my_text my_board_${status.id}" data-status="${status.id}">
+                    <div class="card _statuspanel my_text my_board_${status.id}" data-status="${status.id}">
                         <div class="card-header my_header">
                             ${status.name}
                         </div>
-                        <div class="card-block">
-                        </div>
                         <div class="new_card_wrapper">
+                        </div>
+                        <div class="card-block">
                         </div>
                     </div>
             `;
         }
         parentDomObj.innerHTML = htmlContentString;
+        dom.addCols();
         dataHandler.getCardsByBoardId(board_id, dom.showCards);
     },
 
@@ -163,11 +163,15 @@ dom = {
             var parentDomObjArray = newPanel.getElementsByClassName("new_card_wrapper");
             var board_id = getFirstAncestorByClass(parentDomObjArray[0], "_boardhead").dataset.board_id;
             parentDomObjArray[0].innerHTML = `
-                <div class="card _btn _newcard my_card my_hover" data-board_id="${board_id}">ADD NEW CARD</div>
+                <div class="card _btn _newcard my_card my_hover" data-board_id="${board_id}">
+                    <i class="fas fa-plus"></i>
+                </div>
             `;
             var cardBtnDomObj = parentDomObjArray[0].getElementsByClassName("_newcard")[0];
             cardBtnDomObj.addEventListener("click", function () {
-                dom.turnContentIntoTextarea("add", this);
+                if (cardBtnDomObj.getElementsByTagName("div").length === 0) {
+                    dom.turnContentIntoTextarea("add", this);
+                }
             });
         }
     },
@@ -175,13 +179,14 @@ dom = {
     turnContentIntoTextarea: function (method, domObj) {
         var currentText = domObj.textContent;
         var card_id =  domObj.dataset.id
+        // old class for textArea: class="card my_card my_hover"
         domObj.innerHTML = `
-                <textarea id="edit_field_${card_id}" class="card my_card my_hover" placeholder="New task ..."></textarea>
+                <div contenteditable id="edit_field_${card_id}" class="my_textarea" placeholder="New task ..."></div>
 
         `;
         var textAreaObj = domObj.firstElementChild;
         if (method == "edit") {
-          textAreaObj.value = currentText;
+          textAreaObj.textContent = currentText;
         }
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
@@ -197,7 +202,7 @@ dom = {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();
-            var newCardTitle = domObject.value;
+            var newCardTitle = domObject.textContent;
             if (method === "add") {
                 dataHandler.createNewCard(newCardTitle, board_id, 1, dom.showCards);
                 dom.addNewCardButtons();
@@ -214,28 +219,30 @@ dom = {
 
         createBoardDiv.innerHTML = `
             <h5 class="mb-0">
-                <button id="createBoardButton" class="card my_button btn my_text btn-link">Add new Board</button>
+                <div id="createBoardButton" class="card my_button btn my_text btn-link"><i class="fas fa-plus"></i></div>
             </h5>
         `;
-        let createNewBoardButton = document.getElementById('createBoardButton');
-        createNewBoardButton.addEventListener('click', function () {
-            dom.turnButtonIntoInput();
+        createBoardDiv.addEventListener('click', function () {
+            if (createBoardDiv.getElementsByTagName("input").length === 0) {
+                dom.turnButtonIntoInput();
+            }
         })
     },
 
     turnButtonIntoInput: function() {
         let createBoardDiv = document.getElementById('createBoardDiv');
+        let currentHTMLContent = createBoardDiv.innerHTML;
         createBoardDiv.innerHTML = `
             <input id="createBoardInput"/>
         `;
 
         var createBoardInput = document.getElementById('createBoardInput');
+        createBoardInput.focus();
         createBoardInput.addEventListener("keydown", function () {
             dom.saveBoardEventListener(createBoardInput);
         });
         createBoardInput.addEventListener("focusout", function () {
-            //dom.cancelChangeEventListener(currentText, textAreaObj);
-            createBoardInput.value = "";
+            dom.cancelChangeEventListener(currentHTMLContent, createBoardInput);
         });
     },
 
@@ -255,5 +262,33 @@ dom = {
 
     cancelChangeEventListener: function (oldText, domObject) {
         domObject.parentNode.innerHTML = oldText;
+    },
+
+    adaptSize: function () {
+        let viewport_width = Math.max(document.documentElement.clientWidth, window.innerWidth);
+        if (viewport_width < 768) {
+            var current_size = "sm";
+        } else {
+            var current_size = "not sm";
+        }
+
+        if (window.viewportSize !== current_size) {
+            window.viewportSize = current_size;
+            dom.addCols();
+
+        }
+    },
+
+    addCols: function () {
+        var statusPanelsArray = document.getElementsByClassName("_statuspanel");
+        for (statusPanel of statusPanelsArray) {
+            if (window.viewportSize === "sm") {
+                statusPanel.classList.remove("col");
+                statusPanel.classList.add("col-sm-11");
+            } else {
+                statusPanel.classList.remove("col-sm-11");
+                statusPanel.classList.add("col");
+            }
+        }
     }
 };

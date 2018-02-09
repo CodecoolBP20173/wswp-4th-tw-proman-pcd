@@ -223,7 +223,9 @@ dom = {
             </h5>
         `;
         createBoardDiv.addEventListener('click', function () {
-            dom.turnButtonIntoInput();
+            if (createBoardDiv.getElementsByTagName("input").length === 0) {
+                dom.turnButtonIntoInput();
+            }
         })
     },
 

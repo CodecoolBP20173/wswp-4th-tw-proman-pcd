@@ -63,10 +63,7 @@ dom = {
                 idArray.push(idToPush);
                 }
                 dataHandler.saveOrder(idArray);
-            }).on('drag', function (el) {
-                el.style.maxHeight="80px";
-            }).on('drop', function (el) {
-                el.style.maxHeight="content";
+
             }).on('drop', function (el, target) {
 
             if (target === document.getElementById("trashbin")) {
@@ -129,10 +126,10 @@ dom = {
         cardNode.classList.add("card");
         cardNode.dataset.id = card.id;
         var cardTextNode = document.createTextNode(card.title);
-        var paragraphNode = document.createElement("p");
-        paragraphNode.classList.add("text-center");
-        cardNode.appendChild(paragraphNode);
-        paragraphNode.appendChild(cardTextNode);
+        // var paragraphNode = document.createElement("p");
+        // paragraphNode.classList.add("text-center");
+        // cardNode.appendChild(paragraphNode);
+        cardNode.appendChild(cardTextNode);
         return cardNode;
     },
 

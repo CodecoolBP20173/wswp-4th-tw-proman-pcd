@@ -17,7 +17,8 @@ def registration():
     password = request.args.get('pwd')
     #session['name'] = user_name
     #session['pwd'] = password
-    print(user_name, password, queries.get_shows())
+    #print(user_name, password, queries.get_shows())
+
     return render_template('boards.html')
 
 

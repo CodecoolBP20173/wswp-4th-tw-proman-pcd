@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session
+from data import queries
 app = Flask(__name__)
 
 
@@ -8,8 +9,21 @@ def boards():
     return render_template('boards.html')
 
 
+@app.route("/registration")
+def registration():
+    #if request.method == 'POST':
+    #/registration?name=alma&pwd=korte
+    user_name = request.args.get('name')
+    password = request.args.get('pwd')
+    #session['name'] = user_name
+    #session['pwd'] = password
+    print(user_name, password, queries.get_shows())
+    return render_template('boards.html')
+
+
 def main():
     app.run(debug=True)
+
 
 if __name__ == '__main__':
     main()

@@ -135,5 +135,31 @@ dataHandler = {
                 return this._data.cards[i].board_id;
             }
         }
+    },
+    syncData: async function (data) {
+        console.log("Data sync in process...");
+        try {
+            syncedBoards = dataHandler.syncBoards(data["boards"]);
+            syncedCards = dataHandler.syncCards(data["cards"]);
+            data["boards"] = await syncedBoards;
+            data["cards"] = await syncedCards;
+        }
+        catch (err) {
+            console.log("Data sync failed:", err);
+        }
+        console.log("Data sync completed");
+        return data
+    },
+    syncBoards: async function (boards) {
+        console.log("Syncing boards...");
+        syncedBoards = fetch();
+        return await syncedBoards
+
+    },
+    syncCards: async function (cards) {
+        console.log("Syncing cards...");
+        syncedCards = fetch();
+        return await syncedCards
+
     }
 };

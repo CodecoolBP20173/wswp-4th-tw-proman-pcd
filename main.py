@@ -52,26 +52,25 @@ def boards():
     return render_template('boards.html')
 
 
-@app.route("/registration")
+@app.route("/registration", methods=['GET', 'POST'])
 def registration():
-    #TODO: check if it exist in database
-    user_name = "szilva"
-    password = utils.hash_password('szilva3')
-    submission_time = utils.convert_unix_timestamp_to_readable(time.time())
-    submission_time = submission_time.replace('\n', ' ')
-    session['name'] = user_name
-    session['pwd'] = password
-    queries.add_new_row_into_users(user_name, password, submission_time)
+    if request.method == "GET":
+        return render_template('registration.html')
+    else:
+        user_name = request.form['username']
+        password = utils.hash_password(request.form['password'])
+        submission_time = utils.convert_unix_timestamp_to_readable(time.time())
+        submission_time = submission_time.replace('\n', ' ')
+        queries.add_new_row_into_users(user_name, password, submission_time)
 
-    return render_template('boards.html')
+        return render_template('boards.html')
 
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    # TODO: check if it exist in database, hashpassword!!!!
     if request.method == 'POST':
-        user_name = request.form['username']#"alma"
-        password = request.form['password']#"szilva"
+        user_name = request.form['username']
+        password = utils.hash_password(request.form['password'])
         user = queries.get_user(user_name)
 
         checked = 'remember-me' in request.form
@@ -81,7 +80,6 @@ def login():
             login_user(User(user_name), remember=checked)
             next = request.args.get('next')
             return redirect(next or url_for('boards'))
-            #return redirect(request.args.get("next"))
         else:
             flash("Incorrect ursername or password!")
             return render_template('login.html')

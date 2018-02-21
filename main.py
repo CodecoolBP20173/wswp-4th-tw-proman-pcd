@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, abort, fla
 import time, utils
 from data import queries
 from flask_login import LoginManager, login_user, logout_user, login_required
+from datetime import timedelta
 
 
 class User():
@@ -34,6 +35,7 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)
 
 @login_manager.user_loader
 def load_user(username):
@@ -53,7 +55,6 @@ def boards():
 @app.route("/registration")
 def registration():
     #TODO: check if it exist in database
-    #user_name = request.args.get('name')
     user_name = "szilva"
     password = utils.hash_password('szilva3')
     submission_time = utils.convert_unix_timestamp_to_readable(time.time())
@@ -67,19 +68,17 @@ def registration():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    # TODO: check if it exist in database, hashpassword
+    # TODO: check if it exist in database, hashpassword!!!!
     if request.method == 'POST':
-    #user_name = request.args.get('name')
-    #password = request.args.get('pwd')
         user_name = request.form['username']#"alma"
         password = request.form['pwd']#"szilva"
         user = queries.get_user(user_name)
-        checked = 'remember' in request.form
-        print("remember: ", checked)
+
+        checked = 'remember-me' in request.form
 
         if user != [] and user_name == user[0]['user_id'] \
                 and User.validate_login(user[0]['password'], password):
-            login_user(User(user_name)) #user_name = from database but in this case is teh same
+            login_user(User(user_name), remember=checked)
             flash("Logged in successfully", category='success')
             next = request.args.get('next')
             return redirect(next or url_for('boards'))

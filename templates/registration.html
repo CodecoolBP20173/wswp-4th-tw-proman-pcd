@@ -30,23 +30,30 @@
         <div class="col col-lg-4">
             <form class="form-signin" action="/register" method="post">
                 <h2 class="form-signin-heading">Register</h2>
+                <div class="username-info" style="color: #cef9fc; display: none"> Username should be 6-20 character
+                    long!
+                </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <div class="input-group-text"><i class="fas fa-user"></i></div>
                     </div>
-                    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Username"
-                           name="username" required>
+                    <input type="text" class="form-control" id="username" placeholder="Username"
+                           name="username" required pattern=".{6,20}">
+                </div>
+                <div class="password-info" style="color: #cef9fc; display: none"> Password should be 8-20 character
+                    long! It should include at least one capital letter and special character.
                 </div>
                 <div class="input-group mb-2 form-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text"><i class="fas fa-key"></i></div>
                     </div>
                     <input type="password" class="form-control" id="password" placeholder="Password" name="password"
-                           required>
+                           required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}">
                 </div>
-                <div class="pwd-match-alert" style="color:darkred; display: none" >Passwords don't match</div>
+
+                <div class="pwd-match-alert" style="color:#cef9fc; display: none">Passwords don't match</div>
                 <div class="input-group mb-2">
-                    <div class="input-group-prepend ">
+                    <div class="input-group-prepend">
                         <div class="input-group-text"><i class="fas fa-key"></i></div>
                     </div>
                     <input type="password" class="form-control" id="password_confirm" placeholder="Confirm password"

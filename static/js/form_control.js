@@ -1,4 +1,11 @@
-function formControl() {
+function passwordControl() {
+    $("#password_confirm, #password").on('focus', function () {
+        $(".password-info").show();
+    });
+    $("#password_confirm, #password").on('focusout', function () {
+        $(".password-info").hide();
+    });
+
     $("#password_confirm, #password").on('keyup', function () {
         var pass1 = $("#password").val();
         var pass2 = $("#password_confirm").val();
@@ -8,10 +15,24 @@ function formControl() {
             $(".pwd-match-alert").hide();
         }
     })
-};
+}
+
+function usernameControl() {
+    $("#username").on('focus', function () {
+
+        $(".username-info").show();
+
+    });
+    $("#username").on('focusout', function () {
+
+        $(".username-info").hide();
+
+    })
+}
 
 $(document).ready(function () {
-    formControl();
+    passwordControl();
+    usernameControl();
 });
 
 // pattern

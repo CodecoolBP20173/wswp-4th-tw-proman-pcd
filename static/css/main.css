@@ -169,3 +169,27 @@ button {
     opacity: 0.7;
     z-index: 90;
 }
+
+.form-signin-heading, .remember-me, .register-me {
+    color: #cef9fc;
+}
+
+.sign-in {
+    background-color: rgb(0, 19, 81);
+    border: none;
+    color: #cef9fc;
+}
+
+.sign-in:hover {
+    opacity: 0.7;
+}
+
+a, label {
+    text-decoration: none;
+    color: #cef9fc;
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgb(0, 19, 81);
+}

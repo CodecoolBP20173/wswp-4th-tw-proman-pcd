@@ -8,6 +8,15 @@ def boards():
     return render_template('boards.html')
 
 
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route("/register")
+def reg():
+    return render_template("registration.html")
+
+
 def main():
     app.run(debug=True)
 

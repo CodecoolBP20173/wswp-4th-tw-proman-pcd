@@ -51,7 +51,7 @@ dom = {
             let grandparent = parent.parentElement;
             let status = grandparent.dataset.status;
             let id = el.dataset.id;
-            dataHandler.saveStatus(id, status);
+            dataHandler.saveCardStatus(id, status);
 
             // save new order when card is dropped
         }).on('drop', function (el) {
@@ -100,6 +100,9 @@ dom = {
 
                     if (target === document.getElementById("trashbin")) {
                         el.remove();
+                        let prefix = "board_".length
+                        let boardId = el.id.slice(prefix);
+                        dataHandler.deleteBoard(boardId);
                     }
                 }).on('drag', function () {
                     document.getElementById("trashbin").style.display = "block";

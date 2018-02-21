@@ -55,7 +55,9 @@ dataHandler = {
         let newBoard = {
             id: newBoardId,
             title: boardTitle,
-            is_active: true
+            is_active: true,
+            deleted: false,
+            new: true
         };
         this._data["boards"].push(newBoard);
         this._saveData();
@@ -69,7 +71,9 @@ dataHandler = {
             title: cardTitle,
             board_id: parseInt(boardId),
             status_id: 1,
-            order: 1
+            order: 1,
+            deleted: false,
+            new: true
         };
         dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
@@ -78,7 +82,7 @@ dataHandler = {
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
         callback(cardsOfBoard);
     },
-    saveStatus: function (cardId, status) {
+    saveCardStatus: function (cardId, status) {
         for (let x of this._data.cards) {
             if (x.id == cardId) {
                 x.status_id = status;
@@ -123,8 +127,20 @@ dataHandler = {
     deleteCard: function (cardId) {
         for (let i = 0; i < this._data.cards.length; i++) {
             if (this._data.cards[i].id == cardId) {
+                this._data.cards[i].deleted = true;
+                //TODO: sync sql
                 this._data.cards.splice(i, 1);
                 console.log(this._data.cards);
+                this._saveData();
+            }
+        }
+    },
+    deleteBoard: function (boardId) {
+        for (let i = 0; i < this._data.boards.length; i++) {
+            if (this._data.boards[i].id == boardId) {
+                this._data.boards[i].deleted = true;
+                //TODO: sync
+                this._data.boards.splice(i, 1);
                 this._saveData();
             }
         }

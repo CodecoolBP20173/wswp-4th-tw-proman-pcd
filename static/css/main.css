@@ -10,7 +10,6 @@ h1 img {
     max-height: 200px;
 }
 
-
 #bg_image {
     background-image: url("/static/img/bg02.png");
     background-size: cover;
@@ -61,8 +60,8 @@ h1 img {
     height: 100%;
     padding: 0 20px;
 
-
 }
+
 .my_card {
     min-height: fit-content;
     min-height: 80px;
@@ -130,7 +129,6 @@ button {
     background: #b10a39 !important;
 }
 
-
 .my_board_2 {
     background: #d3390c /*#e5821c*/ !important;
 }
@@ -154,7 +152,6 @@ button {
     max-height: min-content;
 }
 
-
 #trashbin {
     background: url("/static/img/waste-bin.svg");
     background-position: center;
@@ -168,4 +165,33 @@ button {
     display: none;
     opacity: 0.7;
     z-index: 90;
+}
+
+.form-signin-heading, .remember-me, .register-me {
+    color: #cef9fc;
+}
+
+.sign-in {
+    background-color: rgb(0, 19, 81);
+    border: none;
+    color: #cef9fc;
+}
+
+.sign-in:hover {
+    opacity: 0.7;
+}
+
+a, label {
+    text-decoration: none;
+    color: #cef9fc;
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgb(0, 19, 81);
+}
+
+.flashes {
+    position: relative;
+    color: white;
 }

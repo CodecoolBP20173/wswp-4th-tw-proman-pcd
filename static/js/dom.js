@@ -137,7 +137,7 @@ dom = {
         // add status panels to the boards
         var htmlContentString = "";
         for (let status of statusesArray) {
-            htmlContentString += `
+            htmlContentString  += `
                     <div class="card _statuspanel my_text my_board_${status.id}" data-status="${status.id}">
                         <div class="card-header my_header">
                             ${status.name}

@@ -152,14 +152,38 @@ dataHandler = {
     },
     syncBoards: async function (boards) {
         console.log("Syncing boards...");
-        syncedBoards = fetch();
-        return await syncedBoards
-
+        const url = "/get-synced-boards";
+        const data = JSON.stringify(boards);
+        try {
+            syncedBoards = await fetch(url, {
+                method: 'POST',
+                body: data,
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            });
+        }
+        catch (err){
+            throw new Error(err);
+        }
+        return await syncedBoards.json();
     },
     syncCards: async function (cards) {
         console.log("Syncing cards...");
-        syncedCards = fetch();
-        return await syncedCards
-
+        const url = "/get-synced-cards";
+        const data = JSON.stringify(cards);
+        try {
+           syncedCards = await fetch(url, {
+               method: 'POST',
+               body: data,
+               headers: new Headers({
+                'Content-Type': 'application/json'
+               })
+            });
+        }
+        catch (err){
+            throw new Error(err);
+        }
+        return await syncedCards.json();
     }
 };

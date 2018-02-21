@@ -71,7 +71,7 @@ def login():
     # TODO: check if it exist in database, hashpassword!!!!
     if request.method == 'POST':
         user_name = request.form['username']#"alma"
-        password = request.form['pwd']#"szilva"
+        password = request.form['password']#"szilva"
         user = queries.get_user(user_name)
 
         checked = 'remember-me' in request.form

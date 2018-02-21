@@ -72,7 +72,6 @@ def login():
     if request.method == 'POST':
         user_name = request.form['username']#"alma"
         password = request.form['password']#"szilva"
-
         user = queries.get_user(user_name)
 
         checked = 'remember-me' in request.form
@@ -80,7 +79,7 @@ def login():
         if user != [] and user_name == user[0]['user_id'] \
                 and User.validate_login(user[0]['password'], password):
             login_user(User(user_name), remember=checked)
-            #flash("Logged in successfully", category='success')
+            flash("Logged in successfully", category='success')
             next = request.args.get('next')
             return redirect(next or url_for('boards'))
             #return redirect(request.args.get("next"))

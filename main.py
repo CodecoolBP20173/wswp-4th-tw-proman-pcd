@@ -7,9 +7,9 @@ from datetime import timedelta
 
 class User():
 
-    def __init__(self, username):
+    def __init__(self, username, id):
         self.username = username
-        #self.email = None
+        self.id = id
 
     def is_authenticated(self):
         return True
@@ -21,7 +21,7 @@ class User():
         return False
 
     def get_id(self):
-        return self.username
+        return self.id
 
     @staticmethod
     def validate_login(password_hash, password):
@@ -38,11 +38,12 @@ login_manager.login_view = 'login'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)
 
 @login_manager.user_loader
-def load_user(username):
-    user = queries.get_user(username)
+def load_user(id):
+    user = queries.get_user_by_id(id)
     if user == []:
         return None
-    return User(username)
+    name = user[0]['username']
+    return User(name, id)
 
 
 @app.route("/")
@@ -70,15 +71,18 @@ def registration():
 def login():
     if request.method == 'POST':
         user_name = request.form['username']
-        password = utils.hash_password(request.form['password'])
-        user = queries.get_user(user_name)
+        password = request.form['password']
+        user = queries.get_user_by_name(user_name)
 
         checked = 'remember-me' in request.form
 
         if user != [] and user_name == user[0]['username'] \
                 and User.validate_login(user[0]['password'], password):
-            login_user(User(user_name), remember=checked)
+            user_id = user[0]['id']
+            object_user = User(user_name, user_id)
+            login_user(object_user, remember=checked)
             next = request.args.get('next')
+            #print(object_user.get_id())
             return redirect(next or url_for('boards'))
         else:
             flash("Incorrect ursername or password!")

@@ -52,10 +52,10 @@ def boards():
 
 @app.route("/registration")
 def registration():
-    #/registration?name=alma&pwd=korte
     #TODO: check if it exist in database
-    user_name = request.args.get('name')
-    password = utils.hash_passwordrequest.args.get('pwd')
+    #user_name = request.args.get('name')
+    user_name = "szilva"
+    password = utils.hash_password('szilva3')
     submission_time = utils.convert_unix_timestamp_to_readable(time.time())
     submission_time = submission_time.replace('\n', ' ')
     session['name'] = user_name
@@ -68,25 +68,26 @@ def registration():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     # TODO: check if it exist in database, hashpassword
-    #if request.method == 'POST':
+    if request.method == 'POST':
     #user_name = request.args.get('name')
     #password = request.args.get('pwd')
-    user_name = "alma"
-    password = "szilva"
-    user = queries.get_user(user_name)
+        user_name = request.form['username']#"alma"
+        password = request.form['pwd']#"szilva"
+        user = queries.get_user(user_name)
+        checked = 'remember' in request.form
+        print("remember: ", checked)
 
-    if user != [] and user_name == user[0]['user_id'] \
-            and User.validate_login(user[0]['password'], password):
-        print('You can log in. You exist :)')
-        login_user(User(user_name)) #user_name = from database but in this case is teh same
-        flash("Logged in successfully", category='success')
-        next = request.args.get('next')
-        return redirect(next or url_for('/'))
-        #return redirect(request.args.get("next"))
+        if user != [] and user_name == user[0]['user_id'] \
+                and User.validate_login(user[0]['password'], password):
+            login_user(User(user_name)) #user_name = from database but in this case is teh same
+            flash("Logged in successfully", category='success')
+            next = request.args.get('next')
+            return redirect(next or url_for('boards'))
+            #return redirect(request.args.get("next"))
+        else:
+            abort(401)
     else:
-        abort(401)
-    #else:
-    #   return render_template('boards.html')
+        return render_template('login.html')
 
 
 @app.route('/logout')

@@ -76,15 +76,15 @@ def login():
 
         checked = 'remember-me' in request.form
 
-        if user != [] and user_name == user[0]['user_id'] \
+        if user != [] and user_name == user[0]['username'] \
                 and User.validate_login(user[0]['password'], password):
             login_user(User(user_name), remember=checked)
-            flash("Logged in successfully", category='success')
             next = request.args.get('next')
             return redirect(next or url_for('boards'))
             #return redirect(request.args.get("next"))
         else:
-            abort(401)
+            flash("Incorrect ursername or password!")
+            return render_template('login.html')
     else:
         return render_template('login.html')
 

@@ -10,7 +10,6 @@ h1 img {
     max-height: 200px;
 }
 
-
 #bg_image {
     background-image: url("/static/img/bg02.png");
     background-size: cover;
@@ -61,8 +60,8 @@ h1 img {
     height: 100%;
     padding: 0 20px;
 
-
 }
+
 .my_card {
     min-height: fit-content;
     min-height: 80px;
@@ -130,7 +129,6 @@ button {
     background: #b10a39 !important;
 }
 
-
 .my_board_2 {
     background: #d3390c /*#e5821c*/ !important;
 }
@@ -153,7 +151,6 @@ button {
     min-height: 0 !important;
     max-height: min-content;
 }
-
 
 #trashbin {
     background: url("/static/img/waste-bin.svg");
@@ -194,6 +191,7 @@ a:hover {
     color: rgb(0, 19, 81);
 }
 
-.flash-message {
-
+.flashes {
+    position: relative;
+    color: white;
 }

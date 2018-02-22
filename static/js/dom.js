@@ -18,9 +18,9 @@ dom = {
             div.classList.add("card", "my_background", "test_margin");
             div.setAttribute("id", "board_"+board.id);
             div.innerHTML = `
-                    <div class="card-header _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
+                    <div class="card-header handle _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
                         <h5 class="mb-0">
-                            <button class="btn btn-link my_button" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
+                            <button class="btn handle btn-link my_button" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
                                     aria-controls="collapseOne">
                                 ${board.title}
                             </button>
@@ -94,7 +94,10 @@ dom = {
                         return false
                     }
                     return true;
-                }
+                },
+            moves: function (el, container, handle) {
+                return handle.classList.contains('handle');
+            }//TODO: add dom element handle class
         });
         drake2.on('drop', function (el, target) {
 

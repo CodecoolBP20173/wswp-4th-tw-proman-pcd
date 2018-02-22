@@ -166,7 +166,7 @@ dataHandler = {
             }
         }
     },
-    syncData: async function (data) {
+    syncData: function (data) {
         console.log("Data sync in process...");
         const url = "/get-synced-data";
         const merged_data = {
@@ -174,18 +174,27 @@ dataHandler = {
             cards: data["cards"]
         };
         let payload = JSON.stringify(merged_data);
-        const syncedData = await fetch(url, {
+        fetch(url, {
             method: 'POST',
             body: payload,
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             })
+        }).then(function(response) {
+            if (response.ok) {
+                console.log("Data sync completed");
+                return response.json();
+            } else {
+                throw `Data sync failed: ${response.status} ${response.statusText}`;
+            }
+        }).then(function(json_response){
+            console.log("JSON parse ok");
+            console.log("JS RESPONSE_" + json_response);
+            dataHandler._data["boards"] = json_response["boards"];
+            dataHandler._data["cards"] = json_response["cards"];
+        }).catch(function (err) {
+            console.log("Data sync failed: " + err);
         });
-        const jsonResp = await syncedData.json();
-        console.log("Data sync completed");
-        _data["boards"] = jsonResp["boards"];
-        _data["cards"] = jsonResp["cards"];
-        dataHandler._saveData();
     }
 };

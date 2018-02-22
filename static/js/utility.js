@@ -85,3 +85,15 @@ function sortObj(list, key) {
     }
     return list.sort(compare);
 }
+
+
+function createTimestamp() {
+        var date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth()+1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let dateString = year + "-" + month + "-" + day + " " + hour + ":" + minute;
+        return dateString;
+}

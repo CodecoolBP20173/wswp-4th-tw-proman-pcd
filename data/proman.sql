@@ -1,3 +1,9 @@
+drop TABLE boards;
+DROP TABLE cards;
+DROP TABLE statuses;
+DROP TABLE users;
+
+
 CREATE TABLE boards (
     id integer NOT NULL,
     user_id integer NOT NULL,

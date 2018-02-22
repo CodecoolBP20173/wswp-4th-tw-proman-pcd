@@ -45,12 +45,13 @@ dom = {
         for (let i = 0; i < boards.length * 4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
-        dragula(dragulaContainers).on('drop', function (el) {
+        var drake = dragula(dragulaContainers);
+        drake.on('drop', function (el) {
             let parent = el.parentElement;
             let grandparent = parent.parentElement;
             let status = grandparent.dataset.status;
             let id = el.dataset.id;
-            dataHandler.saveStatus(id, status);
+            dataHandler.saveCardStatus(id, status);
 
             // save new order when card is dropped
         }).on('drop', function (el) {
@@ -85,6 +86,69 @@ dom = {
                 }
         })
         ;
+
+        var dragulaContainers = [document.getElementById("trashbin"), document.getElementById("accordion")];
+        var drake2 = dragula(dragulaContainers, {
+            accepts: function (el, target, source, sibling) {
+                    if (target === source) {
+                        return false
+                    }
+                    return true;
+                }
+        });
+        drake2.on('drop', function (el, target) {
+
+                    if (target === document.getElementById("trashbin")) {
+                        el.remove();
+                        let prefix = "board_".length
+                        let boardId = el.id.slice(prefix);
+                        dataHandler.deleteBoard(boardId);
+                    }
+                }).on('drag', function () {
+                    document.getElementById("trashbin").style.display = "block";
+                }).on('dragend', function () {
+                    document.getElementById("trashbin").style.display = "none";
+                }).on('over', function (el, container) {
+                    if (container === document.getElementById("trashbin")) {
+                        document.getElementById("trashbin").style.opacity = ".3";
+                    }
+                }).on('out', function (el, container) {
+                    if (container === document.getElementById("trashbin")) {
+                        document.getElementById("trashbin").style.opacity = ".7";
+                    }
+            })
+            ;
+
+
+
+        /*var drakeArray = [];
+
+        for (let i = 1; i < boards.length; i++) {
+            dragulaContainers.push(document.getElementById(`board_${i}`));
+            drakeArray.push(dragula(dragulaContainers));
+            drakeArray[i-1].on('drop', function (el, target) {
+
+                    if (target === document.getElementById("trashbin")) {
+                        el.remove();
+                    }
+                }).on('drag', function () {
+                    document.getElementById("trashbin").style.display = "block";
+                }).on('dragend', function () {
+                    document.getElementById("trashbin").style.display = "none";
+                }).on('over', function (el, container) {
+                    if (container === document.getElementById("trashbin")) {
+                        document.getElementById("trashbin").style.opacity = ".3";
+                    }
+                }).on('out', function (el, container) {
+                    if (container === document.getElementById("trashbin")) {
+                        document.getElementById("trashbin").style.opacity = ".7";
+                    }
+            })
+            ;
+            dragulaContainers.pop(document.getElementById(`board_${i}`));
+        }*/
+
+
 
         dom.addNewBoardButton();
     },

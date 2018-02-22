@@ -178,6 +178,10 @@ button {
     color: #cef9fc;
 }
 
+.register-me:hover, #log-out:hover {
+    color: #8db3b7;
+}
+
 .sign-in:hover {
     opacity: 0.7;
 }
@@ -202,6 +206,7 @@ a:hover {
     padding: 0px !important;
     margin: 0 !important;
 }
+
 
 #log-box {
     background-color: rgba(0, 0, 0, 0.2);

@@ -24,8 +24,11 @@
 <body class="my_background">
 <div id="bg_image"></div>
 <div id="filter_overlayer"></div>
+<div class="navbar my_text">
+    <img src="/static/img/proman_gif.gif" left="0">
+</div>
 <div class="container">
-    <h1 class="navbar my_text"><img src="/static/img/proman_gif.gif" left="0"></h1>
+
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul class=flashes>

@@ -51,7 +51,7 @@ dataHandler = {
         //NO NEED FOR THIS (YET)
     },
     createNewBoard: function (boardTitle, callBack) {
-        let newBoardId = getNewId(this._data, "boards");
+        let newBoardId = createGUID();
         let timestamp = createTimestamp();
         let newBoard = {
             id: newBoardId,
@@ -67,7 +67,7 @@ dataHandler = {
     },
     createNewCard: function(cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
-        let newCardID = getNewId(this._data, "cards");
+        let newCardID = createGUID();
         let timestamp = createTimestamp();
         let newCard = {
             id: newCardID,

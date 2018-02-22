@@ -5,7 +5,7 @@ DROP TABLE users;
 
 
 CREATE TABLE boards (
-    id integer NOT NULL,
+    id VARCHAR(5) NOT NULL,
     user_id integer NOT NULL,
     title character varying(1000) NOT NULL,
     submission_time timestamp without time zone NOT NULL
@@ -13,8 +13,8 @@ CREATE TABLE boards (
 
 
 CREATE TABLE cards (
-    id integer NOT NULL,
-    board_id integer NOT NULL,
+    id VARCHAR(5) NOT NULL,
+    board_id VARCHAR(5) NOT NULL,
     user_id integer NOT NULL,
     status_id integer NOT NULL,
     title character varying(100),

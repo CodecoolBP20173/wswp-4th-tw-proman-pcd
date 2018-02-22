@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, session, redirect, abort, flash, url_for
+from flask import Flask, render_template, request, session, redirect, abort, flash, url_for, Response
 import time, utils
 from data import queries
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from datetime import timedelta
-
+import json
+import utils
 
 class User():
 
@@ -27,7 +28,6 @@ class User():
     def validate_login(password_hash, password):
         return utils.verify_password(password, password_hash)
 
-
 app = Flask(__name__)
 
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
@@ -48,7 +48,7 @@ def load_user(id):
 
 
 @app.route("/")
-@login_required
+# @login_required
 def boards():
     ''' this is a one-pager which shows all the boards and cards '''
     return render_template('boards.html')
@@ -110,6 +110,17 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+@app.route("/get-synced-data", methods=["POST"])
+@login_required
+def sync_data():
+    local_data = request.get_json()
+    user_id = current_user.get_id()
+    synced_data = utils.sync_data(local_data, user_id)
+    synced_data_json = json.dumps(synced_data)
+    response = Response(synced_data_json, status=200, mimetype='application/json')
+    return response
 
 
 def main():

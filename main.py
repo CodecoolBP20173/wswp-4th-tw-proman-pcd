@@ -46,7 +46,7 @@ def load_user(username):
 
 
 @app.route("/")
-@login_required
+# @login_required
 def boards():
     ''' this is a one-pager which shows all the boards and cards '''
     return render_template('boards.html')
@@ -100,7 +100,7 @@ def logout():
 def sync_data():
     local_data = request.get_json()
     user_id = current_user.get_id()
-    synced_data = sync_data(local_data, user_id)
+    synced_data = utils.sync_data(local_data, user_id)
     synced_data_json = json.dumps(synced_data)
     response = Response(synced_data_json, status=200, mimetype='application/json')
     return response

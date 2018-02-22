@@ -138,52 +138,24 @@ dataHandler = {
     },
     syncData: async function (data) {
         console.log("Data sync in process...");
-        try {
-            syncedBoards = dataHandler.syncBoards(data["boards"]);
-            syncedCards = dataHandler.syncCards(data["cards"]);
-            data["boards"] = await syncedBoards;
-            data["cards"] = await syncedCards;
-        }
-        catch (err) {
-            console.log("Data sync failed:", err);
-        }
+        const url = "/get-synced-data";
+        const merged_data = {
+            boards: data["boards"],
+            cards: data["cards"]
+        };
+        let payload = JSON.stringify(merged_data);
+        const syncedData = await fetch(url, {
+            method: 'POST',
+            body: payload,
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            })
+        });
+        const jsonResp = await syncedData.json();
         console.log("Data sync completed");
-        return data
-    },
-    syncBoards: async function (boards) {
-        console.log("Syncing boards...");
-        const url = "/get-synced-boards";
-        const data = JSON.stringify(boards);
-        try {
-            syncedBoards = await fetch(url, {
-                method: 'POST',
-                body: data,
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                })
-            });
-        }
-        catch (err){
-            throw new Error(err);
-        }
-        return await syncedBoards.json();
-    },
-    syncCards: async function (cards) {
-        console.log("Syncing cards...");
-        const url = "/get-synced-cards";
-        const data = JSON.stringify(cards);
-        try {
-           syncedCards = await fetch(url, {
-               method: 'POST',
-               body: data,
-               headers: new Headers({
-                'Content-Type': 'application/json'
-               })
-            });
-        }
-        catch (err){
-            throw new Error(err);
-        }
-        return await syncedCards.json();
+        _data["boards"] = jsonResp["boards"];
+        _data["cards"] = jsonResp["cards"];
+        dataHandler._saveData();
     }
 };

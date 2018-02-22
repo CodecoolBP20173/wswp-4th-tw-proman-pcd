@@ -16,7 +16,7 @@ dom = {
         for (let board of boards) {
             var div = document.createElement('div');
             div.classList.add("card", "my_background", "test_margin");
-            div.setAttribute("id", "board_"+board.id);
+            div.setAttribute("id", "board_" + board.id);
             div.innerHTML = `
                     <div class="card-header _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
                         <h5 class="mb-0">
@@ -62,63 +62,67 @@ dom = {
             for (let x = 0; x < cardArray.length; x++) {
                 let idToPush = cardArray[x].dataset.id;
                 idArray.push(idToPush);
-                }
-                dataHandler.saveOrder(idArray);
+            }
+            dataHandler.saveOrder(idArray);
 
-            }).on('drop', function (el, target) {
+        }).on('drop', function (el, target) {
 
             if (target === document.getElementById("trashbin")) {
                 el.remove();
                 let cardId = el.dataset.id;
                 dataHandler.deleteCard(cardId);
             }
-            }).on('drag', function () {
-                document.getElementById("trashbin").style.display = "block";
-            }).on('dragend', function () {
-                document.getElementById("trashbin").style.display = "none";
-            }).on('over', function (el, container) {
-                if (container === document.getElementById("trashbin")) {
-                    document.getElementById("trashbin").style.opacity = ".3";
-                }
-            }).on('out', function (el, container) {
-                if (container === document.getElementById("trashbin")) {
-                    document.getElementById("trashbin").style.opacity = ".7";
-                }
+        }).on('drag', function () {
+            document.getElementById("trashbin").style.display = "block";
+            document.getElementById("trashbin").style.background = "#f32d37";
+
+        }).on('dragend', function () {
+            document.getElementById("trashbin").style.display = "none";
+        }).on('over', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.background = "#4621f5";
+            }
+        }).on('out', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.opacity = ".7";
+                document.getElementById("trashbin").style.background = "#f52412";
+            }
         })
         ;
 
         var dragulaContainers = [document.getElementById("trashbin"), document.getElementById("accordion")];
         var drake2 = dragula(dragulaContainers, {
             accepts: function (el, target, source, sibling) {
-                    if (target === source) {
-                        return false
-                    }
-                    return true;
+                if (target === source) {
+                    return false
                 }
+                return true;
+            }
         });
         drake2.on('drop', function (el, target) {
 
-                    if (target === document.getElementById("trashbin")) {
-                        el.remove();
-                        let prefix = "board_".length
-                        let boardId = el.id.slice(prefix);
-                        dataHandler.deleteBoard(boardId);
-                    }
-                }).on('drag', function () {
-                    document.getElementById("trashbin").style.display = "block";
-                }).on('dragend', function () {
-                    document.getElementById("trashbin").style.display = "none";
-                }).on('over', function (el, container) {
-                    if (container === document.getElementById("trashbin")) {
-                        document.getElementById("trashbin").style.opacity = ".3";
-                    }
-                }).on('out', function (el, container) {
-                    if (container === document.getElementById("trashbin")) {
-                        document.getElementById("trashbin").style.opacity = ".7";
-                    }
-            })
-            ;
-
+            if (target === document.getElementById("trashbin")) {
+                el.remove();
+                let prefix = "board_".length
+                let boardId = el.id.slice(prefix);
+                dataHandler.deleteBoard(boardId);
+            }
+        }).on('drag', function () {
+            document.getElementById("trashbin").style.display = "block";
+            document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin.svg')";
+        }).on('dragend', function () {
+            document.getElementById("trashbin").style.display = "none";
+        }).on('over', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin-purple.svg')";
+                document.getElementById("trashbin").style.zIndex = "1000";
+            }
+        }).on('out', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin.svg')";
+            }
+        })
+        ;
 
 
         /*var drakeArray = [];
@@ -147,7 +151,6 @@ dom = {
             ;
             dragulaContainers.pop(document.getElementById(`board_${i}`));
         }*/
-
 
 
         dom.addNewBoardButton();
@@ -201,7 +204,7 @@ dom = {
         // add status panels to the boards
         var htmlContentString = "";
         for (let status of statusesArray) {
-            htmlContentString  += `
+            htmlContentString += `
                     <div class="card _statuspanel my_text my_board_${status.id}" data-status="${status.id}">
                         <div class="card-header my_header">
                             ${status.name}
@@ -239,7 +242,7 @@ dom = {
 
     turnContentIntoTextarea: function (method, domObj) {
         var currentText = domObj.textContent;
-        var card_id =  domObj.dataset.id
+        var card_id = domObj.dataset.id
         // old class for textArea: class="card my_card my_hover"
         domObj.innerHTML = `
                 <div contenteditable id="edit_field_${card_id}" class="my_textarea" placeholder="New task ..."></div>
@@ -247,7 +250,7 @@ dom = {
         `;
         var textAreaObj = domObj.firstElementChild;
         if (method == "edit") {
-          textAreaObj.textContent = currentText;
+            textAreaObj.textContent = currentText;
         }
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
@@ -290,7 +293,7 @@ dom = {
         })
     },
 
-    turnButtonIntoInput: function() {
+    turnButtonIntoInput: function () {
         let createBoardDiv = document.getElementById('createBoardDiv');
         let currentHTMLContent = createBoardDiv.innerHTML;
         createBoardDiv.innerHTML = `
@@ -307,7 +310,7 @@ dom = {
         });
     },
 
-    saveBoardEventListener: function(domObject) {
+    saveBoardEventListener: function (domObject) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();

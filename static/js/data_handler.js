@@ -72,7 +72,7 @@ dataHandler = {
         let newCard = {
             id: newCardID,
             title: cardTitle,
-            board_id: parseInt(boardId),
+            board_id: boardId,
             status_id: 1,
             order: 1,
             deleted: false,
@@ -83,7 +83,7 @@ dataHandler = {
         this._data["cards"].push(newCard);
         sortObj(this._data.cards, "order");
         this._saveData();
-        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
+        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
     },
     saveCardStatus: function (cardId, status) {

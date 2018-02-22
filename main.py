@@ -57,7 +57,10 @@ def boards():
 @app.route("/registration", methods=['GET', 'POST'])
 def registration():
     if request.method == "GET":
-        return render_template('registration.html')
+        if current_user == None:
+            return render_template('registration.html')
+        else:
+            return redirect('/')
     else:
         user_name = request.form['username']
         if queries.get_user_by_name(user_name) == []:

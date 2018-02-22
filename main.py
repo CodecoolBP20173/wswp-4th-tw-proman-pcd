@@ -37,6 +37,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)
 
+
 @login_manager.user_loader
 def load_user(id):
     user = queries.get_user_by_id(id)
@@ -82,7 +83,6 @@ def login():
             object_user = User(user_name, user_id)
             login_user(object_user, remember=checked)
             next = request.args.get('next')
-            #print(object_user.get_id())
             return redirect(next or url_for('boards'))
         else:
             flash("Incorrect ursername or password!")

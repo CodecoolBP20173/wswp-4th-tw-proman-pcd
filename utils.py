@@ -30,15 +30,52 @@ def get_merged_dicts_list(dict_list1, dict_list2):
     merged_dictstring_set = set(local_boards_strings + sql_boards_strings)
     return [json.loads(string) for string in merged_dictstring_set]
 
+
+def process_local_boards (local_boards, user_id):
+    processed_boards = []
+    for board in local_boards:
+        if board["new"]:
+            queries.insert_board(board, user_id)
+            board["new"] = False
+        if board["deleted"]:
+            queries.delete_board(board["id"])
+        else:
+            processed_boards.append(board)
+    return processed_boards
+
+
+def process_local_cards (local_cards, user_id):
+    processed_cards = []
+    for board in local_cards:
+        if board["new"]:
+            queries.insert_card(board, user_id)
+            board["new"] = False
+        if board["deleted"]:
+            queries.delete_card(board["id"])
+        else:
+            processed_cards.append(board)
+    return processed_cards
+
+
+def add_default_values(dictlist):
+    for i in range(len(dictlist)):
+        dictlist[i]["new"] = False
+        dictlist[i]["deleted"] = False
+    return dictlist
+
+
 def sync_data(local_data, user_id):
-    sql_boards = queries.get_boards(user_id)
-    sql_cards = queries.get_cards(user_id)
+    sql_boards = add_default_values(queries.get_boards(user_id))
+    sql_cards = add_default_values(queries.get_cards(user_id))
+
     local_boards = local_data["boards"]
     local_cards = local_data["cards"]
+
+    process_local_boards(local_boards, user_id)
+    process_local_boards(local_cards, user_id)
+
     merged_boards = get_merged_dicts_list(local_boards, sql_boards)
     merged_cards = get_merged_dicts_list(local_cards, sql_cards)
-    #TODO insert and delete boards and cards
-
 
     merged_data = {
         "boards": merged_boards,

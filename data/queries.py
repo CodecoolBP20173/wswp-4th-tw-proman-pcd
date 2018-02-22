@@ -13,8 +13,8 @@ def add_new_row_into_users(user_name, password, time):
                                         """, {'user_name': user_name, 'password': password, 'time': time})
 
 
-def get_user(user_name):
-    return data_manager.execute_select('SELECT username, password FROM users WHERE username = %(user_name)s;',
+def get_user_by_name(user_name):
+    return data_manager.execute_select('SELECT id, username, password FROM users WHERE username = %(user_name)s;',
                                        {'user_name': user_name})
 
 
@@ -68,3 +68,7 @@ def delete_card(card_id):
                                             """, {
                                             "card_id": card_id
                                         })
+
+def get_user_by_id(user_id):
+    return data_manager.execute_select('SELECT id, username, password FROM users WHERE id = %(user_id)s;',
+                                       {'user_id': user_id})

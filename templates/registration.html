@@ -24,11 +24,23 @@
 <body class="my_background">
 <div id="bg_image"></div>
 <div id="filter_overlayer"></div>
+<div class="navbar my_text">
+    <img src="/static/img/proman_gif.gif" left="0">
+</div>
 <div class="container">
-    <h1 class="navbar my_text"><img src="/static/img/proman_gif.gif" left="0"></h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <div class="row justify-content-md-center">
         <div class="col col-lg-4">
-            <form class="form-signin" action="/register" method="post">
+            <form class="form-signin" action="/registration" method="POST">
                 <h2 class="form-signin-heading">Register</h2>
                 <div class="username-info" style="color: #cef9fc; display: none"> Username should be 6-20 character
                     long!
@@ -41,7 +53,7 @@
                            name="username" required pattern=".{6,20}">
                 </div>
                 <div class="password-info" style="color: #cef9fc; display: none"> Password should be 8-20 character
-                    long! It should include at least one capital letter and special character.
+                    long! It should include at least one lower case and an upper case letter.
                 </div>
                 <div class="input-group mb-2 form-group">
                     <div class="input-group-prepend">

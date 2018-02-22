@@ -51,11 +51,15 @@ dataHandler = {
         //NO NEED FOR THIS (YET)
     },
     createNewBoard: function (boardTitle, callBack) {
-        let newBoardId = getNewId(this._data, "boards");
+        let newBoardId = createGUID();
+        let timestamp = createTimestamp();
         let newBoard = {
             id: newBoardId,
             title: boardTitle,
-            is_active: true
+            is_active: true,
+            deleted: false,
+            new: true,
+            submission_time: timestamp
         };
         this._data["boards"].push(newBoard);
         this._saveData();
@@ -63,25 +67,31 @@ dataHandler = {
     },
     createNewCard: function(cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
-        let newCardID = getNewId(this._data, "cards");
+        let newCardID = createGUID();
+        let timestamp = createTimestamp();
         let newCard = {
             id: newCardID,
             title: cardTitle,
-            board_id: parseInt(boardId),
+            board_id: boardId,
             status_id: 1,
-            order: 1
+            order: 1,
+            deleted: false,
+            new: true,
+            submission_time: timestamp
         };
         dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
         sortObj(this._data.cards, "order");
         this._saveData();
-        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
+        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
     },
-    saveStatus: function (cardId, status) {
+    saveCardStatus: function (cardId, status) {
         for (let x of this._data.cards) {
             if (x.id == cardId) {
+                let timestamp = createTimestamp();
                 x.status_id = status;
+                x.submission_time = timestamp;
                 this._saveData();
             }
         }
@@ -90,6 +100,8 @@ dataHandler = {
         for (var x of this._data.cards) {
             for (var id of orderArray) {
                 if (x.id == id) {
+                    let timestamp = createTimestamp();
+                    x.submission_time = timestamp;
                     x.order = orderArray.indexOf(id) + 1;
                 }
             }
@@ -102,9 +114,11 @@ dataHandler = {
         cardId = parseInt(cardId);
         boardId = parseInt(boardId);
         let cards = this._data.cards;
+        let timestamp = createTimestamp();
         for (let i = 0; i < cards.length; i++){
             if (cards[i].id === cardId) {
                 cards[i].title = cardTitle;
+                cards[i].submission_time = timestamp;
                 break;
             }
         }
@@ -123,8 +137,20 @@ dataHandler = {
     deleteCard: function (cardId) {
         for (let i = 0; i < this._data.cards.length; i++) {
             if (this._data.cards[i].id == cardId) {
+                this._data.cards[i].deleted = true;
+                //TODO: sync sql
                 this._data.cards.splice(i, 1);
                 console.log(this._data.cards);
+                this._saveData();
+            }
+        }
+    },
+    deleteBoard: function (boardId) {
+        for (let i = 0; i < this._data.boards.length; i++) {
+            if (this._data.boards[i].id == boardId) {
+                this._data.boards[i].deleted = true;
+                //TODO: sync
+                this._data.boards.splice(i, 1);
                 this._saveData();
             }
         }

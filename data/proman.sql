@@ -1,15 +1,21 @@
+drop TABLE boards;
+DROP TABLE cards;
+DROP TABLE statuses;
+DROP TABLE users;
+
+
 CREATE TABLE boards (
-    id integer NOT NULL,
-    user_id character varying(20) NOT NULL,
+    id VARCHAR(100) NOT NULL,
+    user_id integer NOT NULL,
     title character varying(1000) NOT NULL,
     submission_time timestamp without time zone NOT NULL
 );
 
 
 CREATE TABLE cards (
-    id integer NOT NULL,
-    board_id integer NOT NULL,
-    user_id character varying(20) NOT NULL,
+    id VARCHAR(100) NOT NULL,
+    board_id VARCHAR(100) NOT NULL,
+    user_id integer NOT NULL,
     status_id integer NOT NULL,
     title character varying(100),
     order_no integer NOT NULL,

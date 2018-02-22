@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, session, redirect, abort, flash, url_for, Response
-import time, utils
+from flask import Flask, render_template, request, session, redirect, abort, flash, url_for, jsonify
+import time
 from data import queries
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from datetime import timedelta
-import json
 import utils
 
 class User():
@@ -48,7 +47,7 @@ def load_user(id):
 
 
 @app.route("/")
-# @login_required
+@login_required
 def boards():
     ''' this is a one-pager which shows all the boards and cards '''
     return render_template('boards.html')
@@ -118,8 +117,7 @@ def sync_data():
     local_data = request.get_json()
     user_id = current_user.get_id()
     synced_data = utils.sync_data(local_data, user_id)
-    synced_data_json = json.dumps(synced_data)
-    response = Response(synced_data_json, status=200, mimetype='application/json')
+    response = jsonify(synced_data)
     return response
 
 

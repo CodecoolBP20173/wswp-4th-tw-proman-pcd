@@ -4,7 +4,6 @@ dom = {
     loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.init();
-        dataHandler.getBoards(this.showBoards);
     },
     showBoards: function (boards) {
         // shows boards appending them to #accordion div

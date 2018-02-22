@@ -21,6 +21,39 @@ dataHandler = {
     },
     init: function() {
         this._loadData();
+        this.syncData(dataHandler._data).then(function () {
+            console.log("Data sync done => getting boards");
+            dataHandler.getBoards(dom.showBoards);
+        });
+    },
+    initLocalStorage: function() {
+        var keyInLocalStorage = 'proman-data';
+        cleanData = {
+            "statuses": [
+                {
+                    "id": 1,
+                    "name": "New"
+                },
+                {
+                    "id": 2,
+                    "name": "In progress"
+                },
+                {
+                    "id": 3,
+                    "name": "Testing"
+                },
+                {
+                    "id": 4,
+                    "name": "Done"
+                }
+            ],
+            "boards": [],
+            "cards": []
+        };
+        console.log("Wiping local storage");
+        localStorage.removeItem(keyInLocalStorage);
+        localStorage.setItem(keyInLocalStorage, JSON.stringify(cleanData));
+        dataHandler._loadData();
     },
     getBoards: function(callback) {
         // the boards are retrieved and then the callback function is called with the boards
@@ -75,7 +108,7 @@ dataHandler = {
             title: cardTitle,
             board_id: boardId,
             status_id: 1,
-            order: 1,
+            order_no: 1,
             deleted: false,
             new: true,
             submission_time: timestamp
@@ -168,33 +201,36 @@ dataHandler = {
     },
     syncData: function (data) {
         console.log("Data sync in process...");
-        const url = "/get-synced-data";
-        const merged_data = {
-            boards: data["boards"],
-            cards: data["cards"]
-        };
-        let payload = JSON.stringify(merged_data);
-        fetch(url, {
-            method: 'POST',
-            body: payload,
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            })
-        }).then(function(response) {
-            if (response.ok) {
-                console.log("Data sync completed");
-                return response.json();
-            } else {
-                throw `Data sync failed: ${response.status} ${response.statusText}`;
-            }
-        }).then(function(json_response){
-            console.log("JSON parse ok");
-            console.log("JS RESPONSE_" + json_response);
-            dataHandler._data["boards"] = json_response["boards"];
-            dataHandler._data["cards"] = json_response["cards"];
-        }).catch(function (err) {
-            console.log("Data sync failed: " + err);
+        return new Promise(function (resolve, reject) {
+            const url = "/get-synced-data";
+            const merged_data = {
+                boards: data["boards"],
+                cards: data["cards"]
+            };
+            fetch(url, {
+                body: JSON.stringify(merged_data), // must match 'Content-Type' header
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *omit
+                headers: {'content-type': 'application/json'},
+                method: 'POST', // *GET, PUT, DELETE, etc.
+                 mode: 'cors', // no-cors, *same-origin
+                redirect: 'follow', // *manual, error
+                referrer: 'no-referrer', // *client
+            }).then(function(response) {
+                if (response.ok) {
+                    console.log("Data sync completed");
+                    return response.json();
+                } else {
+                    reject(`Data sync failed: ${response.status} ${response.statusText}`);
+                }
+            }).then(function(json_response){
+                console.log("JSON parse ok");
+                dataHandler._data["boards"] = json_response["boards"];
+                dataHandler._data["cards"] = json_response["cards"];
+                resolve();
+            }).catch(function (err) {
+                reject("Data sync failed: " + err);
+            });
         });
     }
 };

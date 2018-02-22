@@ -7,9 +7,9 @@ from datetime import timedelta
 
 class User():
 
-    def __init__(self, username):
+    def __init__(self, username, id):
         self.username = username
-        #self.email = None
+        self.id = id
 
     def is_authenticated(self):
         return True
@@ -21,7 +21,7 @@ class User():
         return False
 
     def get_id(self):
-        return self.username
+        return self.id
 
     @staticmethod
     def validate_login(password_hash, password):
@@ -37,12 +37,14 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)
 
+
 @login_manager.user_loader
-def load_user(username):
-    user = queries.get_user(username)
+def load_user(id):
+    user = queries.get_user_by_id(id)
     if user == []:
         return None
-    return User(username)
+    name = user[0]['username']
+    return User(name, id)
 
 
 @app.route("/")
@@ -52,36 +54,36 @@ def boards():
     return render_template('boards.html')
 
 
-@app.route("/registration")
+@app.route("/registration", methods=['GET', 'POST'])
 def registration():
-    #TODO: check if it exist in database
-    user_name = "szilva"
-    password = utils.hash_password('szilva3')
-    submission_time = utils.convert_unix_timestamp_to_readable(time.time())
-    submission_time = submission_time.replace('\n', ' ')
-    session['name'] = user_name
-    session['pwd'] = password
-    queries.add_new_row_into_users(user_name, password, submission_time)
+    if request.method == "GET":
+        return render_template('registration.html')
+    else:
+        user_name = request.form['username']
+        password = utils.hash_password(request.form['password'])
+        submission_time = utils.convert_unix_timestamp_to_readable(time.time())
+        submission_time = submission_time.replace('\n', ' ')
+        queries.add_new_row_into_users(user_name, password, submission_time)
 
-    return render_template('boards.html')
+        return render_template('boards.html')
 
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    # TODO: check if it exist in database, hashpassword!!!!
     if request.method == 'POST':
-        user_name = request.form['username']#"alma"
-        password = request.form['password']#"szilva"
-        user = queries.get_user(user_name)
+        user_name = request.form['username']
+        password = request.form['password']
+        user = queries.get_user_by_name(user_name)
 
         checked = 'remember-me' in request.form
 
         if user != [] and user_name == user[0]['username'] \
                 and User.validate_login(user[0]['password'], password):
-            login_user(User(user_name), remember=checked)
+            user_id = user[0]['id']
+            object_user = User(user_name, user_id)
+            login_user(object_user, remember=checked)
             next = request.args.get('next')
             return redirect(next or url_for('boards'))
-            #return redirect(request.args.get("next"))
         else:
             flash("Incorrect ursername or password!")
             return render_template('login.html')

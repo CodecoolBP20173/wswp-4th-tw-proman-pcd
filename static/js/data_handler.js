@@ -161,5 +161,27 @@ dataHandler = {
                 return this._data.cards[i].board_id;
             }
         }
+    },
+    syncData: async function (data) {
+        console.log("Data sync in process...");
+        const url = "/get-synced-data";
+        const merged_data = {
+            boards: data["boards"],
+            cards: data["cards"]
+        };
+        let payload = JSON.stringify(merged_data);
+        const syncedData = await fetch(url, {
+            method: 'POST',
+            body: payload,
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            })
+        });
+        const jsonResp = await syncedData.json();
+        console.log("Data sync completed");
+        _data["boards"] = jsonResp["boards"];
+        _data["cards"] = jsonResp["cards"];
+        dataHandler._saveData();
     }
 };

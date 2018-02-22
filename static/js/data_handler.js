@@ -52,12 +52,14 @@ dataHandler = {
     },
     createNewBoard: function (boardTitle, callBack) {
         let newBoardId = getNewId(this._data, "boards");
+        let timestamp = utility.createTimestamp();
         let newBoard = {
             id: newBoardId,
             title: boardTitle,
             is_active: true,
             deleted: false,
-            new: true
+            new: true,
+            submission_time: timestamp
         };
         this._data["boards"].push(newBoard);
         this._saveData();
@@ -66,6 +68,7 @@ dataHandler = {
     createNewCard: function(cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
         let newCardID = getNewId(this._data, "cards");
+        let timestamp = utility.createTimestamp();
         let newCard = {
             id: newCardID,
             title: cardTitle,
@@ -73,7 +76,8 @@ dataHandler = {
             status_id: 1,
             order: 1,
             deleted: false,
-            new: true
+            new: true,
+            submission_time: timestamp
         };
         dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
@@ -85,7 +89,9 @@ dataHandler = {
     saveCardStatus: function (cardId, status) {
         for (let x of this._data.cards) {
             if (x.id == cardId) {
+                let timestamp = utility.createTimestamp();
                 x.status_id = status;
+                x.submission_time = timestamp;
                 this._saveData();
             }
         }
@@ -94,6 +100,8 @@ dataHandler = {
         for (var x of this._data.cards) {
             for (var id of orderArray) {
                 if (x.id == id) {
+                    let timestamp = utility.createTimestamp();
+                    x.submission_time = timestamp;
                     x.order = orderArray.indexOf(id) + 1;
                 }
             }
@@ -106,9 +114,11 @@ dataHandler = {
         cardId = parseInt(cardId);
         boardId = parseInt(boardId);
         let cards = this._data.cards;
+        let timestamp = utility.createTimestamp();
         for (let i = 0; i < cards.length; i++){
             if (cards[i].id === cardId) {
                 cards[i].title = cardTitle;
+                cards[i].submission_time = timestamp;
                 break;
             }
         }

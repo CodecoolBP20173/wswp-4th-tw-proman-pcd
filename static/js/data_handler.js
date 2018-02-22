@@ -63,6 +63,7 @@ dataHandler = {
         };
         this._data["boards"].push(newBoard);
         this._saveData();
+        dataHandler.syncData(this._data);
         callBack(this._data.boards);
     },
     createNewCard: function(cardTitle, boardId, statusId, callback) {
@@ -83,6 +84,7 @@ dataHandler = {
         this._data["cards"].push(newCard);
         sortObj(this._data.cards, "order");
         this._saveData();
+        dataHandler.syncData(this._data);
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
     },
@@ -93,6 +95,7 @@ dataHandler = {
                 x.status_id = status;
                 x.submission_time = timestamp;
                 this._saveData();
+                dataHandler.syncData(this._data);
             }
         }
     },
@@ -109,6 +112,7 @@ dataHandler = {
 
         sortObj(this._data.cards, "order");
         this._saveData();
+        dataHandler.syncData(this._data);
     },
     editCard: function (cardId, boardId, cardTitle, callback) {
         cardId = parseInt(cardId);
@@ -123,6 +127,7 @@ dataHandler = {
             }
         }
         this._saveData();
+        dataHandler.syncData(this._data);
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
     },
@@ -138,10 +143,9 @@ dataHandler = {
         for (let i = 0; i < this._data.cards.length; i++) {
             if (this._data.cards[i].id == cardId) {
                 this._data.cards[i].deleted = true;
-                //TODO: sync sql
-                this._data.cards.splice(i, 1);
                 console.log(this._data.cards);
                 this._saveData();
+                dataHandler.syncData(this._data);
             }
         }
     },
@@ -150,8 +154,8 @@ dataHandler = {
             if (this._data.boards[i].id == boardId) {
                 this._data.boards[i].deleted = true;
                 //TODO: sync
-                this._data.boards.splice(i, 1);
                 this._saveData();
+                dataHandler.syncData(this._data);
             }
         }
     },

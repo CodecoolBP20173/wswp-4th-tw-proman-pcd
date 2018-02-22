@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, abort, flash, url_for
 import time, utils
 from data import queries
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from datetime import timedelta
 
 
@@ -60,12 +60,22 @@ def registration():
         return render_template('registration.html')
     else:
         user_name = request.form['username']
-        password = utils.hash_password(request.form['password'])
-        submission_time = utils.convert_unix_timestamp_to_readable(time.time())
-        submission_time = submission_time.replace('\n', ' ')
-        queries.add_new_row_into_users(user_name, password, submission_time)
+        if queries.get_user_by_name(user_name) == []:
+            password = utils.hash_password(request.form['password'])
+            submission_time = utils.convert_unix_timestamp_to_readable(time.time())
+            submission_time = submission_time.replace('\n', ' ')
+            queries.add_new_row_into_users(user_name, password, submission_time)
 
-        return render_template('boards.html')
+            # automatically login
+            user_id = queries.get_user_by_name(user_name)[0]['id']
+            checked = 'remember-me'
+            object_user = User(user_name, user_id)
+            login_user(object_user, remember=checked)
+            next = request.args.get('next')
+            return redirect(next or url_for('boards'))
+        else:
+            flash("The username is already exist!")
+            return redirect('/registration')
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -74,7 +84,6 @@ def login():
         user_name = request.form['username']
         password = request.form['password']
         user = queries.get_user_by_name(user_name)
-
         checked = 'remember-me' in request.form
 
         if user != [] and user_name == user[0]['username'] \
@@ -86,9 +95,12 @@ def login():
             return redirect(next or url_for('boards'))
         else:
             flash("Incorrect ursername or password!")
-            return render_template('login.html')
+            return redirect('/login')
     else:
-        return render_template('login.html')
+        if current_user.get_id() == None:
+            return render_template('login.html')
+        else:
+            return redirect('/')
 
 
 @app.route('/logout')

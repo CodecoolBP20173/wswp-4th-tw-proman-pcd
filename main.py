@@ -57,7 +57,7 @@ def boards():
 def registration():
     if request.method == "GET":
         if current_user.is_authenticated:
-            return redirect('/')
+            return render_template('boards.html')
         else:
             return render_template('registration.html')
     else:
@@ -102,7 +102,7 @@ def login():
         if current_user.get_id() == None:
             return render_template('login.html')
         else:
-            return redirect('/')
+            return render_template('boards.html')
 
 
 @app.route('/logout')

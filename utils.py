@@ -63,6 +63,10 @@ def process_local_cards(local_cards, user_id):
             queries.delete_card(card["id"])
         else:
             if card["edited"]:
+                try:
+                    card["status_id"]
+                except KeyError:
+                    card["status_id"] = 0
                 queries.update_card(card)
                 card["edited"] = False
             processed_cards.append(card)

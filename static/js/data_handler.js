@@ -21,11 +21,42 @@ dataHandler = {
     },
     init: function() {
         this._loadData();
+        this.syncData(dataHandler._data).then(function () {
+            dataHandler.getBoards(dom.showBoards);
+        });
+    },
+    initLocalStorage: function() {
+        var keyInLocalStorage = 'proman-data';
+        cleanData = {
+            "statuses": [
+                {
+                    "id": 1,
+                    "name": "New"
+                },
+                {
+                    "id": 2,
+                    "name": "In progress"
+                },
+                {
+                    "id": 3,
+                    "name": "Testing"
+                },
+                {
+                    "id": 4,
+                    "name": "Done"
+                }
+            ],
+            "boards": [],
+            "cards": []
+        };
+        console.log("Wiping local storage");
+        localStorage.removeItem(keyInLocalStorage);
+        localStorage.setItem(keyInLocalStorage, JSON.stringify(cleanData));
+        dataHandler._loadData();
     },
     getBoards: function(callback) {
         // the boards are retrieved and then the callback function is called with the boards
         boards = this._data.boards;
-        console.log(boards);
         callback(boards)
     },
     getBoard: function(boardId, callback) {
@@ -51,38 +82,53 @@ dataHandler = {
         //NO NEED FOR THIS (YET)
     },
     createNewBoard: function (boardTitle, callBack) {
-        let newBoardId = getNewId(this._data, "boards");
+        let newBoardId = createGUID();
+        let timestamp = createTimestamp();
         let newBoard = {
             id: newBoardId,
             title: boardTitle,
-            is_active: true
+            is_active: true,
+            deleted: false,
+            new: true,
+            submission_time: timestamp
         };
         this._data["boards"].push(newBoard);
         this._saveData();
+        dataHandler.syncData(this._data);
         callBack(this._data.boards);
     },
     createNewCard: function(cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
-        let newCardID = getNewId(this._data, "cards");
+        let newCardID = createGUID();
+        let timestamp = createTimestamp();
         let newCard = {
             id: newCardID,
             title: cardTitle,
-            board_id: parseInt(boardId),
+            board_id: boardId,
             status_id: 1,
-            order: 1
+            order_no: 1,
+            deleted: false,
+            new: true,
+            edited: false,
+            submission_time: timestamp
         };
         dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
         sortObj(this._data.cards, "order");
         this._saveData();
-        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", parseInt(boardId));
+        dataHandler.syncData(this._data);
+        let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
     },
-    saveStatus: function (cardId, status) {
+    saveCardStatus: function (cardId, status) {
         for (let x of this._data.cards) {
             if (x.id == cardId) {
+                let timestamp = createTimestamp();
                 x.status_id = status;
+                x.submission_time = timestamp;
+                x.edited = true;
                 this._saveData();
+                dataHandler.syncData(this._data);
             }
         }
     },
@@ -90,6 +136,9 @@ dataHandler = {
         for (var x of this._data.cards) {
             for (var id of orderArray) {
                 if (x.id == id) {
+                    let timestamp = createTimestamp();
+                    x.submission_time = timestamp;
+                    x.edited = true;
                     x.order = orderArray.indexOf(id) + 1;
                 }
             }
@@ -97,18 +146,21 @@ dataHandler = {
 
         sortObj(this._data.cards, "order");
         this._saveData();
+        dataHandler.syncData(this._data);
     },
     editCard: function (cardId, boardId, cardTitle, callback) {
-        cardId = parseInt(cardId);
-        boardId = parseInt(boardId);
         let cards = this._data.cards;
+        let timestamp = createTimestamp();
         for (let i = 0; i < cards.length; i++){
             if (cards[i].id === cardId) {
                 cards[i].title = cardTitle;
+                cards[i].edited = true;
+                cards[i].submission_time = timestamp;
                 break;
             }
         }
         this._saveData();
+        dataHandler.syncData(this._data);
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
     },
@@ -123,9 +175,18 @@ dataHandler = {
     deleteCard: function (cardId) {
         for (let i = 0; i < this._data.cards.length; i++) {
             if (this._data.cards[i].id == cardId) {
-                this._data.cards.splice(i, 1);
-                console.log(this._data.cards);
+                this._data.cards[i].deleted = true;
                 this._saveData();
+                dataHandler.syncData(this._data);
+            }
+        }
+    },
+    deleteBoard: function (boardId) {
+        for (let i = 0; i < this._data.boards.length; i++) {
+            if (this._data.boards[i].id == boardId) {
+                this._data.boards[i].deleted = true;
+                this._saveData();
+                dataHandler.syncData(this._data);
             }
         }
     },
@@ -135,5 +196,39 @@ dataHandler = {
                 return this._data.cards[i].board_id;
             }
         }
+    },
+    syncData: function (data) {
+        console.log("Data sync in process...");
+        return new Promise(function (resolve, reject) {
+            const url = "/get-synced-data";
+            const merged_data = {
+                boards: data["boards"],
+                cards: data["cards"]
+            };
+            fetch(url, {
+                body: JSON.stringify(merged_data), // must match 'Content-Type' header
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *omit
+                headers: {'content-type': 'application/json'},
+                method: 'POST', // *GET, PUT, DELETE, etc.
+                 mode: 'cors', // no-cors, *same-origin
+                redirect: 'follow', // *manual, error
+                referrer: 'no-referrer', // *client
+            }).then(function(response) {
+                if (response.ok) {
+                    console.log("Data sync completed");
+                    return response.json();
+                } else {
+                    reject(`Data sync failed: ${response.status} ${response.statusText}`);
+                }
+            }).then(function(json_response){
+                console.log("JSON parse ok");
+                dataHandler._data["boards"] = json_response["boards"];
+                dataHandler._data["cards"] = json_response["cards"];
+                resolve();
+            }).catch(function (err) {
+                reject("Data sync failed: " + err);
+            });
+        });
     }
 };

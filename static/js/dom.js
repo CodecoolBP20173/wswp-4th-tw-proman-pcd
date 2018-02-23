@@ -4,7 +4,6 @@ dom = {
     loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.init();
-        dataHandler.getBoards(this.showBoards);
     },
     showBoards: function (boards) {
         // shows boards appending them to #accordion div
@@ -14,28 +13,30 @@ dom = {
 
         // create a div for each board. To populate them with cards, divs can be referred to via board.id
         for (let board of boards) {
-            var div = document.createElement('div');
-            div.classList.add("card", "my_background", "test_margin");
-            div.setAttribute("id", "board_"+board.id);
-            div.innerHTML = `
-                    <div class="card-header _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link my_button" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
-                                    aria-controls="collapseOne">
-                                ${board.title}
-                            </button>
-                        </h5>
-                    </div>
-    
-                    <div id="board_id${board.id}" class="my_background collapse hide" aria-labelledby="heading_${board.id}" data-parent="#accordion">
-                        <div class="_board_body card-body row justify-content-around">
-                            <!--Status panels come here-->
+            if (board.deleted == false) {
+                var div = document.createElement('div');
+                div.classList.add("card", "my_background", "test_margin");
+                div.setAttribute("id", "board_" + board.id);
+                div.innerHTML = `
+                        <div class="card-header handle _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
+                            <h5 class="mb-0">
+                                <button class="btn handle btn-link my_button" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                    ${board.title}
+                                </button>
+                            </h5>
                         </div>
-                    </div>
-            `;
-            accordion.appendChild(div);
-            var statusParentObject = document.getElementById(`board_id${board.id}`).firstElementChild;
-            dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
+        
+                        <div id="board_id${board.id}" class="my_background collapse hide" aria-labelledby="heading_${board.id}" data-parent="#accordion">
+                            <div class="_board_body card-body row justify-content-around">
+                                <!--Status panels come here-->
+                            </div>
+                        </div>
+                `;
+                accordion.appendChild(div);
+                var statusParentObject = document.getElementById(`board_id${board.id}`).firstElementChild;
+                dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
+            }
         }
         dom.addNewCardButtons();
 
@@ -45,12 +46,13 @@ dom = {
         for (let i = 0; i < boards.length * 4; i++) {
             dragulaContainers.push(document.getElementsByClassName("card-block")[i]);
         }
-        dragula(dragulaContainers).on('drop', function (el) {
+        var drake = dragula(dragulaContainers);
+        drake.on('drop', function (el) {
             let parent = el.parentElement;
             let grandparent = parent.parentElement;
             let status = grandparent.dataset.status;
             let id = el.dataset.id;
-            dataHandler.saveStatus(id, status);
+            dataHandler.saveCardStatus(id, status);
 
             // save new order when card is dropped
         }).on('drop', function (el) {
@@ -61,30 +63,111 @@ dom = {
             for (let x = 0; x < cardArray.length; x++) {
                 let idToPush = cardArray[x].dataset.id;
                 idArray.push(idToPush);
-                }
-                dataHandler.saveOrder(idArray);
+            }
+            dataHandler.saveOrder(idArray);
 
-            }).on('drop', function (el, target) {
+        }).on('drop', function (el, target) {
 
             if (target === document.getElementById("trashbin")) {
                 el.remove();
                 let cardId = el.dataset.id;
                 dataHandler.deleteCard(cardId);
             }
-            }).on('drag', function () {
-                document.getElementById("trashbin").style.display = "block";
-            }).on('dragend', function () {
-                document.getElementById("trashbin").style.display = "none";
-            }).on('over', function (el, container) {
-                if (container === document.getElementById("trashbin")) {
-                    document.getElementById("trashbin").style.opacity = ".3";
-                }
-            }).on('out', function (el, container) {
-                if (container === document.getElementById("trashbin")) {
-                    document.getElementById("trashbin").style.opacity = ".7";
-                }
+        }).on('drag', function () {
+            document.getElementById("trashbin").style.display = "block";
+            document.getElementById("trashbin").style.width = "10%";
+            document.getElementById("trashbin").style.height = "10%";
+            document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin.svg')";
+        }).on('dragend', function () {
+            document.getElementById("trashbin").style.display = "none";
+        }).on('over', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin-purple.svg')";
+                document.getElementById("trashbin").style.width = "15%";
+                document.getElementById("trashbin").style.height = "15%";
+                document.getElementById("trashbin").style.zIndex = "999999";
+
+            }
+        }).on('out', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin.svg')";
+                document.getElementById("trashbin").style.width = "10%";
+                document.getElementById("trashbin").style.height = "10%";
+            }
         })
         ;
+
+        var dragulaContainers = [document.getElementById("trashbin"), document.getElementById("accordion")];
+        var drake2 = dragula(dragulaContainers, {
+            accepts: function (el, target, source, sibling) {
+                if (target === source) {
+                    return false
+                }
+                return true;
+            },
+            moves: function (el, container, handle) {
+                return handle.classList.contains('handle');
+            }
+        });
+        drake2.on('drop', function (el, target) {
+
+            if (target === document.getElementById("trashbin")) {
+                el.remove();
+                let prefix = "board_".length
+                let boardId = el.id.slice(prefix);
+                dataHandler.deleteBoard(boardId);
+            }
+        }).on('drag', function () {
+            document.getElementById("trashbin").style.display = "block";
+            document.getElementById("trashbin").style.width = "10%";
+            document.getElementById("trashbin").style.height = "10%";
+            document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin.svg')";
+        }).on('dragend', function () {
+            document.getElementById("trashbin").style.display = "none";
+        }).on('over', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin-purple.svg')";
+                document.getElementById("trashbin").style.width = "15%";
+                document.getElementById("trashbin").style.height = "15%";
+                document.getElementById("trashbin").style.zIndex = "999999";
+            }
+        }).on('out', function (el, container) {
+            if (container === document.getElementById("trashbin")) {
+                document.getElementById("trashbin").style.backgroundImage = "url('/static/img/waste-bin.svg')";
+                document.getElementById("trashbin").style.width = "10%";
+                document.getElementById("trashbin").style.height = "10%";
+            }
+        })
+        ;
+
+
+        /*var drakeArray = [];
+
+        for (let i = 1; i < boards.length; i++) {
+            dragulaContainers.push(document.getElementById(`board_${i}`));
+            drakeArray.push(dragula(dragulaContainers));
+            drakeArray[i-1].on('drop', function (el, target) {
+
+                    if (target === document.getElementById("trashbin")) {
+                        el.remove();
+                    }
+                }).on('drag', function () {
+                    document.getElementById("trashbin").style.display = "block";
+                }).on('dragend', function () {
+                    document.getElementById("trashbin").style.display = "none";
+                }).on('over', function (el, container) {
+                    if (container === document.getElementById("trashbin")) {
+                        document.getElementById("trashbin").style.opacity = ".3";
+                    }
+                }).on('out', function (el, container) {
+                    if (container === document.getElementById("trashbin")) {
+                        document.getElementById("trashbin").style.opacity = ".7";
+                    }
+            })
+            ;
+            dragulaContainers.pop(document.getElementById(`board_${i}`));
+        }*/
+
 
         dom.addNewBoardButton();
     },
@@ -96,7 +179,6 @@ dom = {
         // add cards to the board
         // it adds necessary event listeners also
         if (cards.length !== 0) {
-            //TODO: if the card list is empty, all die
             var grandParentObj = document.getElementById("board_" + cards[0].board_id);
             var cardBlocksArray = grandParentObj.getElementsByClassName("card-block");
 
@@ -105,14 +187,16 @@ dom = {
             }
 
             for (let card of cards) {
-                var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
-                var cardNode = dom.generateCardNode(card);
-                cardNode.classList.add("hvr-bob", "my_hover");
-                var targetObjectArray = parentObject.getElementsByClassName("card-block");
-                var cardObj = targetObjectArray[0].appendChild(cardNode);
-                cardObj.addEventListener("click", function () {
-                    dom.turnContentIntoTextarea("edit", this);
-                });
+                if (card.deleted == false) {
+                    var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
+                    var cardNode = dom.generateCardNode(card);
+                    cardNode.classList.add("hvr-bob", "my_hover");
+                    var targetObjectArray = parentObject.getElementsByClassName("card-block");
+                    var cardObj = targetObjectArray[0].appendChild(cardNode);
+                    cardObj.addEventListener("click", function () {
+                        dom.turnContentIntoTextarea("edit", this);
+                    });
+                }
             }
 
         }
@@ -175,7 +259,7 @@ dom = {
 
     turnContentIntoTextarea: function (method, domObj) {
         var currentText = domObj.textContent;
-        var card_id =  domObj.dataset.id
+        var card_id = domObj.dataset.id
         // old class for textArea: class="card my_card my_hover"
         domObj.innerHTML = `
                 <div contenteditable id="edit_field_${card_id}" class="my_textarea" placeholder="New task ..."></div>
@@ -183,7 +267,7 @@ dom = {
         `;
         var textAreaObj = domObj.firstElementChild;
         if (method == "edit") {
-          textAreaObj.textContent = currentText;
+            textAreaObj.textContent = currentText;
         }
         textAreaObj.focus();
         var board_id = getFirstAncestorByClass(textAreaObj, "_boardhead").dataset.board_id;
@@ -226,7 +310,7 @@ dom = {
         })
     },
 
-    turnButtonIntoInput: function() {
+    turnButtonIntoInput: function () {
         let createBoardDiv = document.getElementById('createBoardDiv');
         let currentHTMLContent = createBoardDiv.innerHTML;
         createBoardDiv.innerHTML = `
@@ -243,7 +327,7 @@ dom = {
         });
     },
 
-    saveBoardEventListener: function(domObject) {
+    saveBoardEventListener: function (domObject) {
         var key = event.which || event.keyCode;
         if (key == 13 && !event.shiftKey) {
             event.preventDefault();

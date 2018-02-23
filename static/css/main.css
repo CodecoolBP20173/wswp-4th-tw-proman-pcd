@@ -3,13 +3,13 @@ body {
     width: 100%;
     height: 100%;
     font-family: 'Audiowide', cursive;
+    padding-top: 5%;
 }
 
 h1 img {
     height: 50%;
     max-height: 200px;
 }
-
 
 #bg_image {
     background-image: url("/static/img/bg02.png");
@@ -61,8 +61,8 @@ h1 img {
     height: 100%;
     padding: 0 20px;
 
-
 }
+
 .my_card {
     min-height: fit-content;
     min-height: 80px;
@@ -130,7 +130,6 @@ button {
     background: #b10a39 !important;
 }
 
-
 .my_board_2 {
     background: #d3390c /*#e5821c*/ !important;
 }
@@ -154,7 +153,6 @@ button {
     max-height: min-content;
 }
 
-
 #trashbin {
     background: url("/static/img/waste-bin.svg");
     background-position: center;
@@ -169,3 +167,58 @@ button {
     opacity: 0.7;
     z-index: 90;
 }
+
+.form-signin-heading, .remember-me, .register-me {
+    color: #cef9fc;
+}
+
+.sign-in {
+    background-color: rgb(0, 19, 81);
+    border: none;
+    color: #cef9fc;
+}
+
+.register-me:hover, #log-out:hover {
+    color: #8db3b7;
+}
+
+.sign-in:hover {
+    opacity: 0.7;
+}
+
+a, label {
+    text-decoration: none;
+    color: #cef9fc;
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgb(0, 19, 81);
+}
+
+.flashes {
+    position: relative;
+    color: white;
+}
+
+#log-out, #logged-user {
+    font-size: 16px;
+    padding: 0px !important;
+    margin: 0 !important;
+}
+
+
+#log-box {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.navbar {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    overflow: hidden;
+    z-index: +1;
+}
+

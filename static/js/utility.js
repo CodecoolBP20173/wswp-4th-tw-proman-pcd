@@ -85,3 +85,25 @@ function sortObj(list, key) {
     }
     return list.sort(compare);
 }
+
+
+function createTimestamp() {
+        var date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth()+1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let dateString = year + "-" + month + "-" + day + " " + hour + ":" + minute;
+        return dateString;
+}
+
+
+function createGUID() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}

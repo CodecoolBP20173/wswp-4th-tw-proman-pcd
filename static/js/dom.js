@@ -107,7 +107,7 @@ dom = {
             },
             moves: function (el, container, handle) {
                 return handle.classList.contains('handle');
-            }//TODO: add dom element handle class
+            }
         });
         drake2.on('drop', function (el, target) {
 

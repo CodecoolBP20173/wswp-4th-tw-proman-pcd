@@ -22,7 +22,6 @@ dataHandler = {
     init: function() {
         this._loadData();
         this.syncData(dataHandler._data).then(function () {
-            console.log("Data sync done => getting boards");
             dataHandler.getBoards(dom.showBoards);
         });
     },
@@ -58,7 +57,6 @@ dataHandler = {
     getBoards: function(callback) {
         // the boards are retrieved and then the callback function is called with the boards
         boards = this._data.boards;
-        console.log(boards);
         callback(boards)
     },
     getBoard: function(boardId, callback) {
@@ -111,6 +109,7 @@ dataHandler = {
             order_no: 1,
             deleted: false,
             new: true,
+            edited: false,
             submission_time: timestamp
         };
         dataHandler.increaseOrderNumber();
@@ -127,6 +126,7 @@ dataHandler = {
                 let timestamp = createTimestamp();
                 x.status_id = status;
                 x.submission_time = timestamp;
+                x.edited = true;
                 this._saveData();
                 dataHandler.syncData(this._data);
             }
@@ -138,6 +138,7 @@ dataHandler = {
                 if (x.id == id) {
                     let timestamp = createTimestamp();
                     x.submission_time = timestamp;
+                    x.edited = true;
                     x.order = orderArray.indexOf(id) + 1;
                 }
             }
@@ -148,13 +149,12 @@ dataHandler = {
         dataHandler.syncData(this._data);
     },
     editCard: function (cardId, boardId, cardTitle, callback) {
-        cardId = parseInt(cardId);
-        boardId = parseInt(boardId);
         let cards = this._data.cards;
         let timestamp = createTimestamp();
         for (let i = 0; i < cards.length; i++){
             if (cards[i].id === cardId) {
                 cards[i].title = cardTitle;
+                cards[i].edited = true;
                 cards[i].submission_time = timestamp;
                 break;
             }
@@ -176,7 +176,6 @@ dataHandler = {
         for (let i = 0; i < this._data.cards.length; i++) {
             if (this._data.cards[i].id == cardId) {
                 this._data.cards[i].deleted = true;
-                console.log(this._data.cards);
                 this._saveData();
                 dataHandler.syncData(this._data);
             }
@@ -186,7 +185,6 @@ dataHandler = {
         for (let i = 0; i < this._data.boards.length; i++) {
             if (this._data.boards[i].id == boardId) {
                 this._data.boards[i].deleted = true;
-                //TODO: sync
                 this._saveData();
                 dataHandler.syncData(this._data);
             }

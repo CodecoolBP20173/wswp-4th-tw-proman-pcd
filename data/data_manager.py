@@ -1,6 +1,7 @@
 import os
 import psycopg2
 import psycopg2.extras
+from urllib import parse
 
 
 def establish_connection(connection_data=None):
@@ -14,17 +15,21 @@ def establish_connection(connection_data=None):
     if connection_data is None:
         connection_data = get_connection_data()
     try:
-        connect_str = "dbname={} user={} host={} password={}".format(connection_data['dbname'],
-                                                                     connection_data['user'],
-                                                                     connection_data['host'],
-                                                                     connection_data['password'])
-        conn = psycopg2.connect(connect_str)
-        conn.autocommit = True
-    except psycopg2.DatabaseError as e:
-        print("Cannot connect to database.")
-        print(e)
-    else:
-        return conn
+        parse.uses_netloc.append("postgres")
+        url = parse.urlparse(os.environ["DATABASE_URL"])
+
+        connection = psycopg2.connect(
+            database=url.path[1:],
+            user=url.username,
+            password=url.password,
+            host=url.hostname,
+            port=url.port
+        )
+        connection.autocommit = True
+    except psycopg2.DatabaseError as exception:
+        print('Database connection problem')
+        raise exception
+    return connection
 
 
 def get_connection_data(db_name=None):

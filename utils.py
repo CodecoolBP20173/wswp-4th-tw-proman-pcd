@@ -59,12 +59,12 @@ def process_local_cards(local_cards, user_id):
         if card["new"]:
             queries.insert_card(card, user_id)
             card["new"] = False
-        if card["edited"]:
-            queries.update_card(card)
-            card["edited"] = False
         if card["deleted"]:
             queries.delete_card(card["id"])
         else:
+            if card["edited"]:
+                queries.update_card(card)
+                card["edited"] = False
             processed_cards.append(card)
     return processed_cards
 
@@ -96,9 +96,11 @@ def filter_old_data(data_list):
                     result_list.append(data_list[i])
     return result_list
 
+
 def correct_time_format_in_data(data_list):
     for i in range(len(data_list)):
         data_list[i]["submission_time"] = data_list[i]["submission_time"].strftime('%Y-%m-%d %H:%M')
+
 
 def sync_data(local_data, user_id):
     # Upward update

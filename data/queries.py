@@ -54,6 +54,21 @@ def insert_card(card, user_id):
                                             "submission_time": card["submission_time"]
                                             })
 
+
+def update_card(card):
+    data_manager.execute_dml_statement("""
+                                        UPDATE cards
+                                        SET title = %(title)s, status_id = %(status_id)s, order_no = %(order_no)s, submission_time = %(submission_time)s
+                                        WHERE id = %(id)s AND submission_time < %(submission_time)s;
+                                        """, {
+                                            "id": card["id"],
+                                            "status_id": card["status_id"],
+                                            "title": card["title"],
+                                            "order_no": card["order_no"],
+                                            "submission_time": card["submission_time"]
+                                            })
+
+
 def delete_board(board_id):
         data_manager.execute_dml_statement("""
                                             DELETE FROM boards WHERE id = %(board_id)s;

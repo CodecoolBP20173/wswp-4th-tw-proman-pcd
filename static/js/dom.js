@@ -4,7 +4,6 @@ dom = {
     loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.init();
-        dataHandler.getBoards(this.showBoards);
     },
     showBoards: function (boards) {
         // shows boards appending them to #accordion div
@@ -14,28 +13,30 @@ dom = {
 
         // create a div for each board. To populate them with cards, divs can be referred to via board.id
         for (let board of boards) {
-            var div = document.createElement('div');
-            div.classList.add("card", "my_background", "test_margin");
-            div.setAttribute("id", "board_" + board.id);
-            div.innerHTML = `
-                    <div class="card-header handle _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
-                        <h5 class="mb-0">
-                            <button class="btn handle btn-link my_button" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
-                                    aria-controls="collapseOne">
-                                ${board.title}
-                            </button>
-                        </h5>
-                    </div>
-    
-                    <div id="board_id${board.id}" class="my_background collapse hide" aria-labelledby="heading_${board.id}" data-parent="#accordion">
-                        <div class="_board_body card-body row justify-content-around">
-                            <!--Status panels come here-->
+            if (board.deleted == false) {
+                var div = document.createElement('div');
+                div.classList.add("card", "my_background", "test_margin");
+                div.setAttribute("id", "board_" + board.id);
+                div.innerHTML = `
+                        <div class="card-header handle _boardhead my_text" id="heading_${board.id}" data-board_id="${board.id}">
+                            <h5 class="mb-0">
+                                <button class="btn handle btn-link my_button" data-toggle="collapse" data-target="#board_id${board.id}" aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                    ${board.title}
+                                </button>
+                            </h5>
                         </div>
-                    </div>
-            `;
-            accordion.appendChild(div);
-            var statusParentObject = document.getElementById(`board_id${board.id}`).firstElementChild;
-            dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
+        
+                        <div id="board_id${board.id}" class="my_background collapse hide" aria-labelledby="heading_${board.id}" data-parent="#accordion">
+                            <div class="_board_body card-body row justify-content-around">
+                                <!--Status panels come here-->
+                            </div>
+                        </div>
+                `;
+                accordion.appendChild(div);
+                var statusParentObject = document.getElementById(`board_id${board.id}`).firstElementChild;
+                dataHandler.getStatuses(dom.showStatuses, statusParentObject, board.id);
+            }
         }
         dom.addNewCardButtons();
 
@@ -106,7 +107,7 @@ dom = {
             },
             moves: function (el, container, handle) {
                 return handle.classList.contains('handle');
-            }//TODO: add dom element handle class
+            }
         });
         drake2.on('drop', function (el, target) {
 
@@ -178,7 +179,6 @@ dom = {
         // add cards to the board
         // it adds necessary event listeners also
         if (cards.length !== 0) {
-            //TODO: if the card list is empty, all die
             var grandParentObj = document.getElementById("board_" + cards[0].board_id);
             var cardBlocksArray = grandParentObj.getElementsByClassName("card-block");
 
@@ -187,14 +187,16 @@ dom = {
             }
 
             for (let card of cards) {
-                var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
-                var cardNode = dom.generateCardNode(card);
-                cardNode.classList.add("hvr-bob", "my_hover");
-                var targetObjectArray = parentObject.getElementsByClassName("card-block");
-                var cardObj = targetObjectArray[0].appendChild(cardNode);
-                cardObj.addEventListener("click", function () {
-                    dom.turnContentIntoTextarea("edit", this);
-                });
+                if (card.deleted == false) {
+                    var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];
+                    var cardNode = dom.generateCardNode(card);
+                    cardNode.classList.add("hvr-bob", "my_hover");
+                    var targetObjectArray = parentObject.getElementsByClassName("card-block");
+                    var cardObj = targetObjectArray[0].appendChild(cardNode);
+                    cardObj.addEventListener("click", function () {
+                        dom.turnContentIntoTextarea("edit", this);
+                    });
+                }
             }
 
         }

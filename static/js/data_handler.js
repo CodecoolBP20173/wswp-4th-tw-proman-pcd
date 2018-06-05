@@ -185,6 +185,11 @@ dataHandler = {
         for (let i = 0; i < this._data.boards.length; i++) {
             if (this._data.boards[i].id == boardId) {
                 this._data.boards[i].deleted = true;
+                for (let j = 0; j < this._data.cards.length; j++) {
+                    if (this._data.cards[j].board_id == boardId) {
+                        this._data.cards[j].deleted == true;
+                    }
+                }
                 this._saveData();
                 dataHandler.syncData(this._data);
             }
@@ -223,6 +228,8 @@ dataHandler = {
                 }
             }).then(function(json_response){
                 console.log("JSON parse ok");
+                console.log(json_response["boards"]);
+                console.log(json_response["cards"]);
                 dataHandler._data["boards"] = json_response["boards"];
                 dataHandler._data["cards"] = json_response["cards"];
                 resolve();

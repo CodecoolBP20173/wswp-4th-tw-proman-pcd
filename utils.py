@@ -64,7 +64,7 @@ def process_local_cards(local_cards, user_id):
         else:
             if card["edited"]:
                 try:
-                    card["status_id"]
+                    card["status_id"] = int(card["status_id"])
                 except KeyError:
                     card["status_id"] = 0
                 queries.update_card(card)

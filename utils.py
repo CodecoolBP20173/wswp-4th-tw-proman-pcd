@@ -111,8 +111,8 @@ def sync_data(local_data, user_id):
     local_boards = local_data["boards"]
     local_cards = local_data["cards"]
 
-    processed_local_boards = process_local_boards(local_boards, user_id)
-    processed_local_cards = process_local_cards(local_cards, user_id)
+    process_local_boards(local_boards, user_id)
+    process_local_cards(local_cards, user_id)
 
     # Downward update
     sql_boards = add_default_values_boards(queries.get_boards(user_id))
@@ -121,15 +121,15 @@ def sync_data(local_data, user_id):
     correct_time_format_in_data(sql_boards)
     correct_time_format_in_data(sql_cards)
 
-    merged_boards = get_merged_dicts_list(processed_local_boards, sql_boards)
-    merged_cards = get_merged_dicts_list(processed_local_cards, sql_cards)
-
-    result_boards = filter_old_data(merged_boards)
-    result_cards = filter_old_data(merged_cards)
+    # merged_boards = get_merged_dicts_list(processed_local_boards, sql_boards)
+    # merged_cards = get_merged_dicts_list(processed_local_cards, sql_cards)
+    #
+    # result_boards = filter_old_data(merged_boards)
+    # result_cards = filter_old_data(merged_cards)
 
     merged_data = {
-        "boards": result_boards,
-        "cards" : result_cards
+        "boards": sql_boards,
+        "cards" : sql_cards
     }
     return merged_data
 

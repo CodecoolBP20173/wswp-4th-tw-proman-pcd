@@ -87,6 +87,8 @@ def execute_dml_statement(statement, variables=None):
     result = None
     with establish_connection() as conn:
         with conn.cursor() as cursor:
+            print(statement)
+            print(variables)
             cursor.execute(statement, variables)
             try:
                 result = cursor.fetchone()

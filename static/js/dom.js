@@ -185,7 +185,7 @@ dom = {
             for (let block of cardBlocksArray) {
                 block.innerHTML = "";
             }
-
+            let sortedCards = sortObj(cards, "order_no");
             for (let card of cards) {
                 if (card.deleted == false) {
                     var parentObject = grandParentObj.querySelectorAll(`[data-status='${card.status_id}']`)[0];

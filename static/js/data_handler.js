@@ -133,7 +133,7 @@ dataHandler = {
                 this._saveData();
                 console.log("Editing status");
                 console.log(this._data);
-                //dataHandler.syncData(this._data);
+                dataHandler.syncData(this._data);
             }
         }
     },

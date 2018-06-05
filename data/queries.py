@@ -60,7 +60,7 @@ def update_card(card):
     DATA_MANAGER.execute_dml_statement("""
                                         UPDATE cards
                                         SET title = %(title)s, status_id = %(status_id)s, order_no = %(order_no)s, submission_time = %(submission_time)s
-                                        WHERE id = %(id)s AND submission_time < %(submission_time)s;
+                                        WHERE id = %(id)s AND submission_time <= %(submission_time)s;
                                         """, {
                                             "id": card["id"],
                                             "status_id": card["status_id"],

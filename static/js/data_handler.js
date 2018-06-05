@@ -194,16 +194,17 @@ dataHandler = {
         for (let i = 0; i < this._data.boards.length; i++) {
             if (this._data.boards[i].id == boardId) {
                 this._data.boards[i].deleted = true;
-                for (let j = 0; j < this._data.cards.length; j++) {
-                    if (this._data.cards[j].board_id == boardId) {
-                        this._data.cards[j].deleted == true;
-                    }
-                }
-                this._saveData();
-                console.log("Deleting board");
-                dataHandler.syncData(this._data);
+
             }
         }
+        for (let i = 0; i < this._data.cards.length; i++) {
+            if (this._data.cards[i].board_id == boardId) {
+                this._data.cards[i].deleted = true;
+            }
+        }
+        this._saveData();
+        console.log("Deleting board");
+        dataHandler.syncData(this._data);
     },
     getBoardId: function (cardId) {
         for (let i = 0; i < this._data.cards.length; i++) {

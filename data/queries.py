@@ -1,35 +1,36 @@
-from data import data_manager
+from data import data_manager_local
 import datetime
 
+DATA_MANAGER = data_manager_local
 
 def get_users():
-    return data_manager.execute_select('SELECT * FROM users;')
+    return DATA_MANAGER.execute_select('SELECT * FROM users;')
 
 
 def add_new_row_into_users(user_name, password, time):
-    data_manager.execute_dml_statement("""
+    DATA_MANAGER.execute_dml_statement("""
                                           INSERT INTO users (username, password, submission_time) 
                                           VALUES (%(user_name)s, %(password)s, %(time)s);
                                         """, {'user_name': user_name, 'password': password, 'time': time})
 
 
 def get_user_by_name(user_name):
-    return data_manager.execute_select('SELECT id, username, password FROM users WHERE username = %(user_name)s;',
-                                       {'user_name': user_name})
+    return DATA_MANAGER.execute_select('SELECT id, username, password FROM users WHERE username = %(user_name)s;',
+                                             {'user_name': user_name})
 
 
 def get_boards(user_id):
-    return data_manager.execute_select('SELECT id, title, submission_time FROM boards WHERE user_id = %(user_id)s;',
-                                       {'user_id': user_id})
+    return DATA_MANAGER.execute_select('SELECT id, title, submission_time FROM boards WHERE user_id = %(user_id)s;',
+                                             {'user_id': user_id})
 
 
 def get_cards(user_id):
-    return data_manager.execute_select('SELECT id, board_id, status_id, title, order_no, submission_time FROM cards WHERE user_id = %(user_id)s;',
-                                       {'user_id': user_id})
+    return DATA_MANAGER.execute_select('SELECT id, board_id, status_id, title, order_no, submission_time FROM cards WHERE user_id = %(user_id)s;',
+                                             {'user_id': user_id})
 
 
 def insert_board(board, user_id):
-    data_manager.execute_dml_statement("""
+    DATA_MANAGER.execute_dml_statement("""
                                         INSERT INTO boards(id, user_id, title, submission_time)
                                         VALUES (%(id)s, %(user_id)s, %(title)s, %(submission_time)s);
                                        """, {
@@ -41,7 +42,7 @@ def insert_board(board, user_id):
 
 
 def insert_card(card, user_id):
-    data_manager.execute_dml_statement("""
+    DATA_MANAGER.execute_dml_statement("""
                                             INSERT INTO cards(id, board_id, user_id, status_id, title, order_no, submission_time)
                                             VALUES (%(id)s, %(board_id)s, %(user_id)s, %(status_id)s, %(title)s, %(order_no)s, %(submission_time)s);
                                            """, {
@@ -56,10 +57,10 @@ def insert_card(card, user_id):
 
 
 def update_card(card):
-    data_manager.execute_dml_statement("""
+    DATA_MANAGER.execute_dml_statement("""
                                         UPDATE cards
                                         SET title = %(title)s, status_id = %(status_id)s, order_no = %(order_no)s, submission_time = %(submission_time)s
-                                        WHERE id = %(id)s AND submission_time < %(submission_time)s;
+                                        WHERE id = %(id)s AND submission_time <= %(submission_time)s;
                                         """, {
                                             "id": card["id"],
                                             "status_id": card["status_id"],
@@ -70,7 +71,7 @@ def update_card(card):
 
 
 def delete_board(board_id):
-        data_manager.execute_dml_statement("""
+    DATA_MANAGER.execute_dml_statement("""
                                             DELETE FROM boards WHERE id = %(board_id)s;
                                             """, {
                                             "board_id": board_id
@@ -78,12 +79,12 @@ def delete_board(board_id):
 
 
 def delete_card(card_id):
-    data_manager.execute_dml_statement("""
+    DATA_MANAGER.execute_dml_statement("""
                                             DELETE FROM cards WHERE id = %(card_id)s;
                                             """, {
                                             "card_id": card_id
                                         })
 
 def get_user_by_id(user_id):
-    return data_manager.execute_select('SELECT id, username, password FROM users WHERE id = %(user_id)s;',
-                                       {'user_id': user_id})
+    return DATA_MANAGER.execute_select('SELECT id, username, password FROM users WHERE id = %(user_id)s;',
+                                             {'user_id': user_id})

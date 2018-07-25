@@ -21,6 +21,7 @@ dataHandler = {
     },
     init: function() {
         this._loadData();
+        console.log("Initializing");
         this.syncData(dataHandler._data).then(function () {
             dataHandler.getBoards(dom.showBoards);
         });
@@ -94,6 +95,7 @@ dataHandler = {
         };
         this._data["boards"].push(newBoard);
         this._saveData();
+        console.log("Creating new board");
         dataHandler.syncData(this._data);
         callBack(this._data.boards);
     },
@@ -114,8 +116,9 @@ dataHandler = {
         };
         dataHandler.increaseOrderNumber();
         this._data["cards"].push(newCard);
-        sortObj(this._data.cards, "order");
+        sortObj(this._data.cards, "order_no");
         this._saveData();
+        console.log("Creating new card");
         dataHandler.syncData(this._data);
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
@@ -128,6 +131,8 @@ dataHandler = {
                 x.submission_time = timestamp;
                 x.edited = true;
                 this._saveData();
+                console.log("Editing status");
+                console.log(this._data);
                 dataHandler.syncData(this._data);
             }
         }
@@ -139,13 +144,15 @@ dataHandler = {
                     let timestamp = createTimestamp();
                     x.submission_time = timestamp;
                     x.edited = true;
-                    x.order = orderArray.indexOf(id) + 1;
+                    x.order_no = orderArray.indexOf(id) + 1;
                 }
             }
         }
 
-        sortObj(this._data.cards, "order");
+        sortObj(this._data.cards, "order_no");
         this._saveData();
+        console.log("Editing order");
+        console.log(this._data);
         dataHandler.syncData(this._data);
     },
     editCard: function (cardId, boardId, cardTitle, callback) {
@@ -160,6 +167,7 @@ dataHandler = {
             }
         }
         this._saveData();
+        console.log("Editing card");
         dataHandler.syncData(this._data);
         let cardsOfBoard = getObjectListByKeyValue(this._data, "cards", "board_id", boardId);
         callback(cardsOfBoard);
@@ -177,6 +185,7 @@ dataHandler = {
             if (this._data.cards[i].id == cardId) {
                 this._data.cards[i].deleted = true;
                 this._saveData();
+                console.log("Deleting card");
                 dataHandler.syncData(this._data);
             }
         }
@@ -185,10 +194,17 @@ dataHandler = {
         for (let i = 0; i < this._data.boards.length; i++) {
             if (this._data.boards[i].id == boardId) {
                 this._data.boards[i].deleted = true;
-                this._saveData();
-                dataHandler.syncData(this._data);
+
             }
         }
+        for (let i = 0; i < this._data.cards.length; i++) {
+            if (this._data.cards[i].board_id == boardId) {
+                this._data.cards[i].deleted = true;
+            }
+        }
+        this._saveData();
+        console.log("Deleting board");
+        dataHandler.syncData(this._data);
     },
     getBoardId: function (cardId) {
         for (let i = 0; i < this._data.cards.length; i++) {
@@ -223,6 +239,8 @@ dataHandler = {
                 }
             }).then(function(json_response){
                 console.log("JSON parse ok");
+                console.log(json_response["boards"]);
+                console.log(json_response["cards"]);
                 dataHandler._data["boards"] = json_response["boards"];
                 dataHandler._data["cards"] = json_response["cards"];
                 resolve();
